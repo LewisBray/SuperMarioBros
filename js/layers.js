@@ -18,3 +18,35 @@ export function createBackgroundLayer(level, tileSet) {
 export function createSpriteLayer(entities) {
   return context => entities.forEach(entity => entity.draw(context));
 }
+
+
+export function createCollisionLayer(level) {
+  const resolvedTiles = [];
+
+  const tileResolver = level.tileCollider.tiles;
+  const tileSize = tileResolver.tileSize;
+
+  const getByIndexOriginal = tileResolver.getByIndex;
+  tileResolver.getByIndex = function(x, y) {
+    resolvedTiles.push({x, y});
+    return getByIndexOriginal.call(tileResolver, x, y);
+  }
+
+  return context => {
+    context.strokeStyle = 'blue';
+    resolvedTiles.forEach(({x, y}) => {
+      context.beginPath();
+      context.rect(x * tileSize, y * tileSize, tileSize, tileSize);
+      context.stroke();
+    });
+
+    context.strokeStyle = 'red';
+    level.entities.forEach(entity => {
+      context.beginPath();
+      context.rect(entity.pos.x, entity.pos.y, entity.width, entity.height);
+      context.stroke();
+    })
+
+    resolvedTiles.length = 0;
+  };
+}

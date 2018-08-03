@@ -3,20 +3,20 @@ const PRESSED = 1;
 const RELEASED = 0;
 
 // Handles keyboard inputs from the player
-export default class KeyHandler {
+class KeyHandler {
   constructor() {
     this.keyStates = new Map();   // State of key (pressed or not)
     this.keyMaps = new Map();     // Maps key to consequence function
   }
 
-  addMapping(keyCode, callback) {
-    this.keyMaps.set(keyCode, callback);
+  addMapping(code, callback) {
+    this.keyMaps.set(code, callback);
   }
 
   handleEvent(event) {
-    const {keyCode} = event;
+    const {code} = event;
 
-    if (!this.keyMaps.has(keyCode))
+    if (!this.keyMaps.has(code))
       return;
 
     event.preventDefault();
@@ -24,12 +24,12 @@ export default class KeyHandler {
     const keyState = (event.type === 'keydown') ? PRESSED : RELEASED;
 
     // Get out early if button already pressed/released
-    if (this.keyStates.get(keyCode) === keyState)
+    if (this.keyStates.get(code) === keyState)
       return;
 
-    this.keyStates.set(keyCode, keyState);
+    this.keyStates.set(code, keyState);
 
-    this.keyMaps.get(keyCode)(keyState);
+    this.keyMaps.get(code)(keyState);
   }
 
   listenTo(window) {
@@ -39,4 +39,26 @@ export default class KeyHandler {
       });
     });
   }
+}
+
+
+export function setupKeyboardInput(entity) {
+  const inputHandler = new KeyHandler();
+
+  inputHandler.addMapping('Space', keyState => {
+    if (keyState === 1)
+      entity.jump.start();
+    else
+      entity.jump.cancel();
+  });
+
+  inputHandler.addMapping('ArrowLeft', keyState => {
+    entity.controlWalk.direction = -keyState;
+  });
+
+  inputHandler.addMapping('ArrowRight', keyState => {
+    entity.controlWalk.direction = keyState;
+  });
+
+  return inputHandler;
 }

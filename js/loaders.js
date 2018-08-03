@@ -1,6 +1,6 @@
 import Level from './level.js';
 import {createBackgroundTiles} from './sprites.js';
-import {createBackgroundLayer, createSpriteLayer} from './layers.js';
+import {createBackgroundLayer, createSpriteLayer, createCollisionLayer} from './layers.js';
 
 
 // Functions which load resources and return promises so we
@@ -29,6 +29,7 @@ export function loadLevel(name) {
 
     level.compositor.layers.push(createBackgroundLayer(level, tileSet));
     level.compositor.layers.push(createSpriteLayer(level.entities));
+    level.compositor.layers.push(createCollisionLayer(level));
 
     return level;
   });

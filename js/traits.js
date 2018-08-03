@@ -52,3 +52,17 @@ export class Jump extends Trait {
     }
   }
 }
+
+
+export class ControlWalk extends Trait {
+  constructor() {
+    super('controlWalk');
+
+    this.direction = 0;
+    this.speed = 6000;
+  }
+
+  update(entity, deltaTime) {
+    entity.vel.x = this.speed * this.direction * deltaTime;
+  }
+}

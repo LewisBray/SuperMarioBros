@@ -1,6 +1,6 @@
 import Entity from './entity.js';
 import {Vec} from './maths.js';
-import {Jump, Velocity} from './traits.js';
+import {Jump, Velocity, ControlWalk} from './traits.js';
 import {createMarioSprites} from './sprites.js';
 
 
@@ -10,10 +10,11 @@ import {createMarioSprites} from './sprites.js';
 export function createMario() {
   return createMarioSprites()
   .then(sprites => {
-    const mario = new Entity(new Vec(64, 140), new Vec(0, 0));
+    const mario = new Entity(new Vec(64, 140), new Vec(0, 0), 16, 16);
 
+    mario.addTrait(new ControlWalk());
     mario.addTrait(new Jump());
-    mario.addTrait(new Velocity());
+    //mario.addTrait(new Velocity());     // Needs to be put back eventually
 
     mario.draw = function(context) {
       sprites.draw('idle', context, this.pos.x, this.pos.y);

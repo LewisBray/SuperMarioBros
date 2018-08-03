@@ -1,9 +1,11 @@
 
 // Base class for all characters/enemies/etc...
 export default class Entity {
-  constructor(pos, vel) {
+  constructor(pos, vel, width, height) {
     this.pos = pos;
     this.vel = vel;
+    this.width = width;
+    this.height = height;
     this.traits = [];
   }
 

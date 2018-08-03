@@ -1,14 +1,15 @@
 import Timer from './timer.js';
-import KeyHandler from './keyhandler.js';
 import {loadLevel} from './loaders.js';
 import {createMario} from './mario.js';
+import {setupKeyboardInput} from './keyhandler.js';
 
 
-const context = document.getElementById('screen').getContext('2d');
+const screen = document.getElementById('screen');
+const context = screen.getContext('2d');
 
 // Just setting up a background so I can see where the canvas ends
 context.fillStyle = '#DFDFDF';
-context.fillRect(0, 0, document.getElementById('screen').width, document.getElementById('screen').width);
+context.fillRect(0, 0, screen.width, screen.width);
 
 
 // Load everything in parallel then start game logic
@@ -17,23 +18,23 @@ Promise.all([
   loadLevel('1-1')
 ])
 .then(([mario, level]) => {
-  const inputHandler = new KeyHandler();
-  inputHandler.addMapping(32, keyState => {
-    if (keyState === 1)
-      mario.jump.start();
-    else
-      mario.jump.cancel();
-  });
+  const inputHandler = setupKeyboardInput(mario);
   inputHandler.listenTo(window);
+
+  ['mousedown', 'mousemove'].forEach(eventName => {
+    screen.addEventListener(eventName, event => {
+      if (event.buttons === 1)
+        mario.vel.set(0, 0);
+        mario.pos.set(event.offsetX, event.offsetY);
+    });
+  });
 
   level.entities.push(mario);
 
-  const gravity = 1000;
   const timer = new Timer(1/60);
   timer.update = function(deltaTime) {
     level.update(deltaTime);
     level.compositor.draw(context);
-    mario.vel.y += gravity * deltaTime;
   };
 
   timer.start();
