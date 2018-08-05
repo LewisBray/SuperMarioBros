@@ -1,0 +1,140 @@
+{
+  "imageURL": "/js/images/tileset.png",
+  "tileWidth": 16,
+  "tileHeight": 16,
+
+  "tiles": [
+    {
+      "name": "ground",
+      "location": [0, 0]
+    },
+    {
+      "name": "sky",
+      "location": [3, 23]
+    },
+    {
+      "name": "brickTop",
+      "location": [1, 0]
+    },
+    {
+      "name": "block",
+      "location": [0, 1]
+    },
+    {
+      "name": "question",
+      "location": [24, 0]
+    },
+    {
+      "name": "vertPipeLeft",
+      "location": [0, 9]
+    },
+    {
+      "name": "vertPipeRight",
+      "location": [1, 9]
+    },
+    {
+      "name": "vertPipeCapLeft",
+      "location": [0, 8]
+    },
+    {
+      "name": "vertPipeCapRight",
+      "location": [1, 8]
+    },
+    {
+      "name": "hill",
+      "location": [9, 9]
+    },
+    {
+      "name": "hillSlopeLeft",
+      "location": [8, 8]
+    },
+    {
+      "name": "hillSlopeRight",
+      "location": [10, 8]
+    },
+    {
+      "name": "hillCap",
+      "location": [9, 8]
+    },
+    {
+      "name": "hillSpotsLeft",
+      "location": [10, 9]
+    },
+    {
+      "name": "hillSpotsRight",
+      "location": [8, 9]
+    },
+    {
+      "name": "bush",
+      "location": [12, 9]
+    },
+    {
+      "name": "bushLeft",
+      "location": [11, 9]
+    },
+    {
+      "name": "bushRight",
+      "location": [13, 9]
+    },
+    {
+      "name": "cloud",
+      "location": [1, 20]
+    },
+    {
+      "name": "cloudLeft",
+      "location": [0, 20]
+    },
+    {
+      "name": "cloudRight",
+      "location": [2, 20]
+    },
+    {
+      "name": "cloudBase",
+      "location": [1, 21]
+    },
+    {
+      "name": "cloudBaseLeft",
+      "location": [0, 21]
+    },
+    {
+      "name": "cloudBaseRight",
+      "location": [2, 21]
+    },
+    {
+      "name": "flagpole",
+      "location": [16, 9]
+    },
+    {
+      "name": "flagpoleTop",
+      "location": [16, 8]
+    },
+    {
+      "name": "castleBrick",
+      "location": [13, 0]
+    },
+    {
+      "name": "castleBattlements",
+      "location": [11, 0]
+    },
+    {
+      "name": "castleBattlementBricks",
+      "location": [11, 1]
+    },
+    {
+      "name": "castleWindowRight",
+      "location": [12, 0]
+    },
+    {
+      "name": "castleWindowLeft",
+      "location": [14, 0]
+    },
+    {
+      "name": "castleDoorway",
+      "location": [13, 1]
+    },
+    {
+      "name": "castleDoorwayTop",
+      "location": [12, 1]
+    }
+  ]
+}

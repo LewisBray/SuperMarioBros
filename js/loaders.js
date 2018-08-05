@@ -1,6 +1,6 @@
 import Level from './level.js';
-import {createBackgroundTiles} from './sprites.js';
-import {createBackgroundLayer, createSpriteLayer, createCollisionLayer} from './layers.js';
+import SpriteSet from './spriteset.js';
+import {createBackgroundLayer, createSpriteLayer} from './layers.js';
 
 
 // Functions which load resources and return promises so we
@@ -18,29 +18,48 @@ export function loadImage(url) {
 
 
 export function loadLevel(name) {
-  return Promise.all([
-    fetch(`js/levels/${name}.json`).then(file => file.json()),
-    createBackgroundTiles()
-  ])
+  return loadJSON(`/js/levels/${name}.json`)
+  .then(levelSpec => Promise.all([
+    levelSpec,
+    loadTileSet(`/js/tilesets/${levelSpec.tileSet}.json`)
+  ]))
   .then(([levelSpec, tileSet]) => {
-    const level = new Level();
+    const level = new Level(levelSpec.backgroundColour);
 
     createTileGrid(level, levelSpec.backgrounds);
 
     level.compositor.layers.push(createBackgroundLayer(level, tileSet));
     level.compositor.layers.push(createSpriteLayer(level.entities));
-    level.compositor.layers.push(createCollisionLayer(level));
 
     return level;
   });
 }
+
 
 function createTileGrid(level, backgrounds) {
   backgrounds.forEach(background => {
     background.ranges.forEach(([x1, x2, y1, y2]) => {
       for (let x = x1; x < x2; ++x)
         for (let y = y1; y < y2; ++y)
-          level.tiles.set(x, y, {name: background.tile});
+          level.tiles.set(x, y, {name: background.tile, type: background.type});
     });
   });
+}
+
+
+function loadJSON(url) {
+  return fetch(url).then(file => file.json());
+}
+
+
+function loadTileSet(name) {
+  return loadJSON(name)
+  .then(tilesSpec => Promise.all([tilesSpec, loadImage(tilesSpec.imageURL)]))
+  .then(([tilesSpec, tileSetImage]) => {
+    const tileSet = new SpriteSet(tileSetImage, tilesSpec.tileWidth, tilesSpec.tileHeight);
+    tilesSpec.tiles.forEach(tile => {
+      tileSet.defineTile(tile.name, tile.location[0], tile.location[1]);
+    });
+      return tileSet;
+    });
 }

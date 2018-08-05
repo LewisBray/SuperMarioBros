@@ -13,7 +13,7 @@ export default class TileCollider {
       entity.pos.y, entity.pos.y + entity.height);
 
     matchedTiles.forEach(matchedTile => {
-      if (matchedTile.tile.name !== 'ground')
+      if (matchedTile.tile.type !== 'solid')
         return;
 
       if (entity.vel.x > 0) {
@@ -41,7 +41,7 @@ export default class TileCollider {
       sideEntityIsMoving, sideEntityIsMoving);
 
     matchedTiles.forEach(matchedTile => {
-      if (matchedTile.tile.name !== 'ground')
+      if (matchedTile.tile.type !== 'solid')
         return;
 
       if (entity.vel.y > 0) {
@@ -115,5 +115,3 @@ class TileResolver {
     return matches;
   }
 }
-
-window.TileResolver = TileResolver;

@@ -16,8 +16,10 @@ export function createMario() {
     mario.addTrait(new Jump());
     //mario.addTrait(new Velocity());     // Needs to be put back eventually
 
-    mario.draw = function(context) {
-      sprites.draw('idle', context, this.pos.x, this.pos.y);
+    mario.draw = function(context, camera) {
+      sprites.draw('idle', context,
+        this.pos.x - camera.pos.x,
+        this.pos.y - camera.pos.y);
     }
 
     return mario;
