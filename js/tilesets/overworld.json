@@ -25,6 +25,18 @@
       "location": [24, 0]
     },
     {
+      "name": "question-1",
+      "location": [24, 0]
+    },
+    {
+      "name": "question-2",
+      "location": [25, 0]
+    },
+    {
+      "name": "question-3",
+      "location": [26, 0]
+    },
+    {
       "name": "vertPipeLeft",
       "location": [0, 9]
     },
@@ -135,6 +147,25 @@
     {
       "name": "castleDoorwayTop",
       "location": [12, 1]
+    }
+  ],
+
+  "animations" : [
+    {
+      "name": "question",
+      "frameLength": 0.1,
+
+      "frames": [
+        "question-1",
+        "question-1",
+        "question-1",
+        "question-1",
+        "question-1",
+        "question-1",
+        "question-2",
+        "question-3",
+        "question-2"
+      ]
     }
   ]
 }

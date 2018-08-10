@@ -7,6 +7,7 @@ import {Matrix} from './maths.js';
 export default class Level {
   constructor(backgroundColour) {
     this.gravity = 1000;
+    this.totalTime = 0;
     this.backgroundColour = backgroundColour;
 
     this.compositor = new Compositor();
@@ -27,5 +28,7 @@ export default class Level {
 
       entity.vel.y += this.gravity * deltaTime;
     });
+
+    this.totalTime += deltaTime;
   }
 }

@@ -12,11 +12,7 @@ export function createBackgroundLayer(level, tileSet) {
   // Not sure if I even want this function, the background buffers for the entire
   // level don't strike me as being a ridiculous size and it results in less code
   // and maybe even better performance once the background is all loaded into memory
-  let prevStartIndex, prevEndIndex;
   function drawBackgroundSubrange(startIndex, endIndex) {
-    if (startIndex === prevStartIndex && endIndex === prevEndIndex) // Don't draw more than needed
-      return;
-
     // Clears the buffer so we don't get multiple copies of a sprite next to each other
     backgroundContext.fillStyle = level.backgroundColour;
     backgroundContext.fillRect(0, 0, screen.width, screen.height);
@@ -25,13 +21,13 @@ export function createBackgroundLayer(level, tileSet) {
       const column = level.tiles.grid[x];
       if (column) {
         column.forEach((tile, y) => {
-          tileSet.drawTile(tile.name, backgroundContext, x - startIndex, y);
+          if (tileSet.animations.has(tile.name))
+            tileSet.drawAnimation(tile.name, backgroundContext, x - startIndex, y, level.totalTime);
+          else
+           tileSet.drawTile(tile.name, backgroundContext, x - startIndex, y);
         });
       }
     }
-
-    prevStartIndex = startIndex;
-    prevEndIndex = endIndex;
   }
 
   const tileResolver = level.tileCollider.tiles;

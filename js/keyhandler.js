@@ -53,11 +53,11 @@ export function setupKeyboardInput(entity) {
   });
 
   inputHandler.addMapping('ArrowLeft', keyState => {
-    entity.controlWalk.direction = -keyState;
+    entity.move.direction = -keyState;
   });
 
   inputHandler.addMapping('ArrowRight', keyState => {
-    entity.controlWalk.direction = keyState;
+    entity.move.direction = keyState;
   });
 
   return inputHandler;

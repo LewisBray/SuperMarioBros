@@ -16,18 +16,6 @@ class Trait {
 }
 
 
-export class Velocity extends Trait {
-  constructor() {
-    super('velocity');
-  }
-
-  update(entity, deltaTime) {
-    entity.pos.x += entity.vel.x * deltaTime;
-    entity.pos.y += entity.vel.y * deltaTime;
-  }
-}
-
-
 export class Jump extends Trait {
   constructor() {
     super('jump');
@@ -54,15 +42,24 @@ export class Jump extends Trait {
 }
 
 
-export class ControlWalk extends Trait {
+export class Move extends Trait {
   constructor() {
-    super('controlWalk');
+    super('move');
 
     this.direction = 0;
     this.speed = 6000;
+    this.distance = 0;
+    this.heading = 1;
   }
 
   update(entity, deltaTime) {
     entity.vel.x = this.speed * this.direction * deltaTime;
+
+    if (this.direction !== 0) {
+      this.heading = this.direction;
+      this.distance += Math.abs(entity.vel.x) * deltaTime;
+    }
+    else
+      this.distance = 0;
   }
 }
