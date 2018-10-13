@@ -14,6 +14,12 @@ export default class Entity {
     this[trait.name] = trait;
   }
 
+  collide(side) {
+    this.traits.forEach(trait => {
+      trait.collide(this, side);
+    })
+  }
+
   update(deltaTime) {
     this.traits.forEach(trait => {
       trait.update(this, deltaTime);

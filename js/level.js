@@ -6,7 +6,7 @@ import {Matrix} from './maths.js';
 // Handles all aspects of a level (background, entities, etc...)
 export default class Level {
   constructor(backgroundColour) {
-    this.gravity = 1000;
+    this.gravity = 1500;
     this.totalTime = 0;
     this.backgroundColour = backgroundColour;
 

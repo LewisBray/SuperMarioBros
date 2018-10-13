@@ -48,12 +48,16 @@ export default class TileCollider {
         if (entity.pos.y > matchedTile.top - entity.height) {
           entity.vel.y = 0;
           entity.pos.y = matchedTile.top - entity.height;
+
+          entity.collide('below');
         }
       }
       else if (entity.vel.y < 0) {
         if (entity.pos.y < matchedTile.bottom) {
           entity.vel.y = 0;
           entity.pos.y = matchedTile.bottom;
+
+          entity.collide('above');
         }
       }
     });

@@ -25,6 +25,18 @@
       "position": [321, 44],
       "width": 16,
       "height": 16
+    },
+    {
+      "name": "skid",
+      "position": [337, 44],
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "jump",
+      "position": [355, 44],
+      "width": 16,
+      "height": 16
     }
   ]
 }

@@ -42,23 +42,27 @@ class KeyHandler {
 }
 
 
-export function setupKeyboardInput(entity) {
+export function setupKeyboardInput(mario) {
   const inputHandler = new KeyHandler();
 
   inputHandler.addMapping('Space', keyState => {
     if (keyState === 1)
-      entity.jump.start();
+      mario.jump.start();
     else
-      entity.jump.cancel();
+      mario.jump.cancel();
   });
 
-  inputHandler.addMapping('ArrowLeft', keyState => {
-    entity.move.direction = -keyState;
+  inputHandler.addMapping('KeyA', keyState => {
+    mario.move.direction += keyState ? -1 : 1
   });
 
-  inputHandler.addMapping('ArrowRight', keyState => {
-    entity.move.direction = keyState;
+  inputHandler.addMapping('KeyD', keyState => {
+    mario.move.direction += keyState ? 1 : -1;
   });
+
+  inputHandler.addMapping('KeyJ', keyState => {
+    mario.turbo(keyState);
+  })
 
   return inputHandler;
 }
