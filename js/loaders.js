@@ -1,5 +1,6 @@
 import Level from './level.js';
 import SpriteSet from './spriteset.js';
+import {Matrix} from './maths.js';
 import {animFrameSelectorFactory} from './animation.js';
 import {createBackgroundLayer, createSpriteLayer} from './layers.js';
 
@@ -27,9 +28,17 @@ export function loadLevel(name) {
   .then(([levelSpec, tileSet]) => {
     const level = new Level(levelSpec.backgroundColour);
 
-    createTileGrid(level, levelSpec.backgrounds);
+    const mergedLayerTiles = levelSpec.layers.reduce((tiles, layer) => {
+      return tiles.concat(layer.tiles);
+    }, []);
+    const collisionGrid = createCollisionGrid(mergedLayerTiles, levelSpec.patterns);
+    level.setCollisionGrid(collisionGrid);
 
-    level.compositor.layers.push(createBackgroundLayer(level, tileSet));
+    levelSpec.layers.forEach(layer => {
+      const backgroundGrid = createBackgroundGrid(layer.tiles, levelSpec.patterns);
+      level.compositor.layers.push(createBackgroundLayer(level, backgroundGrid, tileSet));
+    });
+
     level.compositor.layers.push(createSpriteLayer(level.entities));
 
     return level;
@@ -37,14 +46,57 @@ export function loadLevel(name) {
 }
 
 
-function createTileGrid(level, backgrounds) {
-  backgrounds.forEach(background => {
-    background.ranges.forEach(([x1, x2, y1, y2]) => {
-      for (let x = x1; x < x2; ++x)
-        for (let y = y1; y < y2; ++y)
-          level.tiles.set(x, y, {name: background.tile, type: background.type});
+function createCollisionGrid(tiles, patterns) {
+  const grid = new Matrix();
+
+  for (const {x, y, tile} of expandTiles(tiles, patterns))
+    grid.set(x, y, {type: tile.type});
+
+  return grid;
+}
+
+
+function createBackgroundGrid(tiles, patterns) {
+  const grid = new Matrix();
+
+  for (const {x, y, tile} of expandTiles(tiles, patterns))
+    grid.set(x, y, {name: tile.name});
+
+  return grid;
+}
+
+
+function expandTiles(tiles, patterns) {
+  const expandedTiles = [];
+
+  function walkThroughTiles(tiles, xOffset, yOffset) {
+    tiles.forEach(tile => {
+      if (tile.pattern) {
+        const patternTiles = patterns[tile.pattern].tiles;
+        tile.positions.forEach(([x, y]) => {
+          walkThroughTiles(patternTiles, x, y);
+        });
+      }
+      else {
+        tile.ranges.forEach(range => {
+          for (const {x, y} of generateCoords(range))
+            expandedTiles.push({x: x + xOffset, y: y + yOffset, tile});
+        });
+      }
     });
-  });
+  }
+
+  walkThroughTiles(tiles, 0, 0);
+
+  return expandedTiles;
+}
+
+
+function* generateCoords(range) {
+  const [xStart, xEnd, yStart, yEnd] = range;
+  for (let x = xStart; x < xEnd; ++x)
+    for (let y = yStart; y < yEnd; ++y)
+      yield {x, y};
 }
 
 

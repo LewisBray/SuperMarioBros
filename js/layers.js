@@ -1,24 +1,25 @@
+import {TileResolver} from './tilecollider.js';
 
 // Layers are not what they sound like, in this project layers are functions
 // which draw the actual tile/sprite graphical layers to a context.  These
 // functions are created and then added to an array of layers in the compositor.
 
-export function createBackgroundLayer(level, tileSet) {
+export function createBackgroundLayer(level, tiles, tileSet) {
+  const resolver = new TileResolver(tiles);
+
   const backgroundBuffer = document.createElement('canvas');
   backgroundBuffer.width = 26 * 16 + 16;    // Remove the + 16 later
   backgroundBuffer.height = 15 * 16;
 
   const backgroundContext = backgroundBuffer.getContext('2d');
+
   // Not sure if I even want this function, the background buffers for the entire
   // level don't strike me as being a ridiculous size and it results in less code
   // and maybe even better performance once the background is all loaded into memory
   function drawBackgroundSubrange(startIndex, endIndex) {
-    // Clears the buffer so we don't get multiple copies of a sprite next to each other
-    backgroundContext.fillStyle = level.backgroundColour;
-    backgroundContext.fillRect(0, 0, screen.width, screen.height);
-
+    backgroundContext.clearRect(0, 0, backgroundBuffer.width, backgroundBuffer.height);
     for (let x = startIndex; x <= endIndex; ++x) {
-      const column = level.tiles.grid[x];
+      const column = tiles.grid[x];
       if (column) {
         column.forEach((tile, y) => {
           if (tileSet.animations.has(tile.name))
@@ -36,8 +37,6 @@ export function createBackgroundLayer(level, tileSet) {
     const startIndex = tileResolver.toIndex(camera.pos.x);
     const endIndex = startIndex + drawWidth;
 
-    // Filling the background with colour here results in multiple copies of sprites when
-    // scrolling, not sure what the difference is between putting it in drawBackgroundSubrange
     drawBackgroundSubrange(startIndex, endIndex);
     context.drawImage(backgroundBuffer, -camera.pos.x % 16, -camera.pos.y);
   };

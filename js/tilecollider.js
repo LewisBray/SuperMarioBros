@@ -65,7 +65,7 @@ export default class TileCollider {
 }
 
 
-class TileResolver {
+export class TileResolver {
   constructor(matrix, tileSize = 16) {
     this.matrix = matrix;
     this.tileSize = tileSize;

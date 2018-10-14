@@ -24,7 +24,7 @@ Promise.all([
   inputHandler.listenTo(window);
   setupMouseControls(screen, camera, mario);
 
-  level.compositor.layers.push(createCollisionLayer(level));
+  //level.compositor.layers.push(createCollisionLayer(level));
   level.compositor.layers.push(createCameraLayer(camera));
 
   level.entities.push(mario);
@@ -35,6 +35,11 @@ Promise.all([
 
     if (mario.pos.x > 150)
       camera.pos.x = mario.pos.x - 150;
+
+    // Fill in background background colour before drawing layers,
+    // maybe make this a rudementary layer of its own?
+    context.fillStyle = level.backgroundColour;
+    context.fillRect(0, 0, 26 * 16 + 16, 15 * 16);
 
     level.compositor.draw(context, camera);
   };
