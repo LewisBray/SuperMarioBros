@@ -113,3 +113,21 @@ export class Move extends Trait {
     this.distance += absXVel * deltaTime;
   }
 }
+
+
+export class AIWalk extends Trait {
+  constructor(speed) {
+    super('aiWalk');
+
+    this.speed = speed;
+  }
+
+  collide(entity, side) {
+    if (side === 'left' || side === 'right')
+      this.speed *= -1;
+  }
+
+  update(entity, deltaTime) {
+    entity.vel.x = this.speed;
+  }
+}

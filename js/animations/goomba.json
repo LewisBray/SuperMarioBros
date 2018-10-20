@@ -1,0 +1,37 @@
+{
+  "imageURL": "/js/images/characters.gif",
+  "xScale": 1,
+  "yScale": 1,
+
+  "tiles": [
+    {
+      "name": "walk-1",
+      "location": [296, 187],
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "walk-2",
+      "location": [315, 187],
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "squashed",
+      "location": [277, 43],
+      "width": 16,
+      "height": 16
+    }
+  ],
+
+  "animations": [
+    {
+      "name": "walk",
+      "frameLength": 0.15,
+      "frames": [
+        "walk-1",
+        "walk-2"
+      ]
+    }
+  ]
+}

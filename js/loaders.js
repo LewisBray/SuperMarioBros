@@ -23,7 +23,7 @@ export function loadLevel(name) {
   return loadJSON(`/js/levels/${name}.json`)
   .then(levelSpec => Promise.all([
     levelSpec,
-    loadTileSet(`/js/tilesets/${levelSpec.tileSet}.json`)
+    loadSpriteSet(`/js/tilesets/${levelSpec.tileSet}.json`)
   ]))
   .then(([levelSpec, tileSet]) => {
     const level = new Level(levelSpec.backgroundColour);
@@ -105,20 +105,25 @@ function loadJSON(url) {
 }
 
 
-function loadTileSet(name) {
+// This needs to be made more elegant and more thought put into JSON format so it
+// works for both character sprites and level tiles.
+export function loadSpriteSet(name, spriteWidth = 16, spriteHeight = 16) {
   return loadJSON(name)
-  .then(tilesSpec => Promise.all([tilesSpec, loadImage(tilesSpec.imageURL)]))
-  .then(([tilesSpec, tileSetImage]) => {
-    const tileSet = new SpriteSet(tileSetImage, tilesSpec.tileWidth, tilesSpec.tileHeight);
+  .then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.imageURL)]))
+  .then(([spritesSpec, tileSetImage]) => {
+    const tileSet = new SpriteSet(tileSetImage, spriteWidth, spriteHeight);
 
-    if (tilesSpec.tiles) {
-      tilesSpec.tiles.forEach(tile => {
-        tileSet.defineTile(tile.name, tile.location[0], tile.location[1]);
+    if (spritesSpec.tiles) {
+      spritesSpec.tiles.forEach(tile => {
+        tileSet.define(tile.name,
+          tile.location[0] * spritesSpec.xScale,
+          tile.location[1] * spritesSpec.yScale,
+          spriteWidth, spriteHeight);             // needs to be specified in JSON?
       });
     }
 
-    if (tilesSpec.animations) {
-      tilesSpec.animations.forEach(animationSpec => {
+    if (spritesSpec.animations) {
+      spritesSpec.animations.forEach(animationSpec => {
         const animFrameSelector =
           animFrameSelectorFactory(animationSpec.frames, animationSpec.frameLength);
 
@@ -127,20 +132,5 @@ function loadTileSet(name) {
     }
 
     return tileSet;
-  });
-}
-
-
-export function loadAnimationFrames(name) {
-  return loadJSON(`/js/animations/${name}.json`)
-  .then(framesSpec => Promise.all([framesSpec, loadImage(framesSpec.imageURL)]))
-  .then(([framesSpec, spriteSetImage]) => {
-    const animFramesSet = new SpriteSet(spriteSetImage, 16, 16);
-    framesSpec.frames.forEach(frameSpec => {
-      animFramesSet.define(frameSpec.name,
-        frameSpec.position[0], frameSpec.position[1],
-        frameSpec.width, frameSpec.height);
-    })
-    return animFramesSet;
   });
 }

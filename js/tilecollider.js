@@ -7,25 +7,30 @@ export default class TileCollider {
     if (entity.vel.x === 0)
       return;
 
-    const sideEntityIsMoving = (entity.vel.x > 0) ? entity.pos.x + entity.width : entity.pos.x;
+    const sideEntityIsMoving = (entity.vel.x > 0) ?
+      entity.collisionBox.right : entity.collisionBox.left;
     const matchedTiles = this.tiles.searchByRange(
       sideEntityIsMoving, sideEntityIsMoving,
-      entity.pos.y, entity.pos.y + entity.height);
+      entity.collisionBox.top, entity.collisionBox.bottom);
 
     matchedTiles.forEach(matchedTile => {
       if (matchedTile.tile.type !== 'solid')
         return;
 
       if (entity.vel.x > 0) {
-        if (entity.pos.x > matchedTile.left - entity.width) {
+        if (entity.collisionBox.right > matchedTile.left) {
           entity.vel.x = 0;
-          entity.pos.x = matchedTile.left - entity.width;
+          entity.collisionBox.right = matchedTile.left;
+
+          entity.collide('right');
         }
       }
       else if (entity.vel.x < 0) {
-        if (entity.pos.x < matchedTile.right) {
+        if (entity.collisionBox.left < matchedTile.right) {
           entity.vel.x = 0;
-          entity.pos.x = matchedTile.right;
+          entity.collisionBox.left = matchedTile.right;
+
+          entity.collide('left');
         }
       }
     });
@@ -35,9 +40,10 @@ export default class TileCollider {
     if (entity.vel.y === 0)
       return;
 
-    const sideEntityIsMoving = (entity.vel.y > 0) ? entity.pos.y + entity.height : entity.pos.y;
+    const sideEntityIsMoving = (entity.vel.y > 0) ?
+      entity.collisionBox.bottom : entity.collisionBox.top;
     const matchedTiles = this.tiles.searchByRange(
-      entity.pos.x, entity.pos.x + entity.width,
+      entity.collisionBox.left, entity.collisionBox.right,
       sideEntityIsMoving, sideEntityIsMoving);
 
     matchedTiles.forEach(matchedTile => {
@@ -45,17 +51,17 @@ export default class TileCollider {
         return;
 
       if (entity.vel.y > 0) {
-        if (entity.pos.y > matchedTile.top - entity.height) {
+        if (entity.collisionBox.bottom > matchedTile.top) {
           entity.vel.y = 0;
-          entity.pos.y = matchedTile.top - entity.height;
+          entity.collisionBox.bottom = matchedTile.top;
 
           entity.collide('below');
         }
       }
       else if (entity.vel.y < 0) {
-        if (entity.pos.y < matchedTile.bottom) {
+        if (entity.collisionBox.top < matchedTile.bottom) {
           entity.vel.y = 0;
-          entity.pos.y = matchedTile.bottom;
+          entity.collisionBox.top = matchedTile.bottom;
 
           entity.collide('above');
         }

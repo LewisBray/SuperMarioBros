@@ -1,0 +1,31 @@
+{
+  "imageURL": "/js/images/characters.gif",
+  "xScale": 1,
+  "yScale": 1,
+
+  "tiles": [
+    {
+      "name": "walk-1",
+      "location": [296, 206],
+      "width": 16,
+      "height": 24
+    },
+    {
+      "name": "walk-2",
+      "location": [315, 206],
+      "width": 16,
+      "height": 24
+    }
+  ],
+
+  "animations": [
+    {
+      "name": "walk",
+      "frameLength": 0.15,
+      "frames": [
+        "walk-1",
+        "walk-2"
+      ]
+    }
+  ]
+}

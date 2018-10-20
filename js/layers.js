@@ -75,9 +75,10 @@ export function createCollisionLayer(level) {
     context.strokeStyle = 'red';
     level.entities.forEach(entity => {
       context.beginPath();
-      context.rect(entity.pos.x - camera.pos.x,
-        entity.pos.y - camera.pos.y,
-        entity.width, entity.height);
+      context.rect(entity.collisionBox.left - camera.pos.x,
+        entity.collisionBox.top - camera.pos.y,
+        entity.collisionBox.right - entity.collisionBox.left,
+        entity.collisionBox.bottom - entity.collisionBox.top);
       context.stroke();
     })
 
