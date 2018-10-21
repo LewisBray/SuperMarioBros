@@ -22,37 +22,63 @@ export function loadImage(url) {
 }
 
 
-export function loadLevel(name) {
-  return loadJSON(`/js/levels/${name}.json`)
-  .then(levelSpec => Promise.all([
-    levelSpec,
-    loadSpriteSet(`/js/tilesets/${levelSpec.tileSet}.json`)
-  ]))
-  .then(([levelSpec, tileSet]) => {
-    const level = new Level(levelSpec.backgroundColour);
+export function createLevelLoader(entityFactory) {
+  return levelName => {
+    return loadJSON(`/js/levels/${levelName}.json`)
+    .then(levelSpec => Promise.all([
+      levelSpec,
+      loadSpriteSet(`/js/tilesets/${levelSpec.tileSet}.json`)
+    ]))
+    .then(([levelSpec, tileSet]) => {
+      const level = new Level(levelSpec.backgroundColour);
 
-    const mergedLayerTiles = levelSpec.layers.reduce((tiles, layer) => {
-      return tiles.concat(layer.tiles);
-    }, []);
-    const collisionGrid = createCollisionGrid(mergedLayerTiles, levelSpec.patterns);
-    level.setCollisionGrid(collisionGrid);
+      setupCollisionDetection(levelSpec, level);
+      setupBackgrounds(levelSpec, level, tileSet);
+      setupEntities(levelSpec, level, entityFactory);
 
-    levelSpec.layers.forEach(layer => {
-      const backgroundGrid = createBackgroundGrid(layer.tiles, levelSpec.patterns);
-      level.compositor.layers.push(createBackgroundLayer(level, backgroundGrid, tileSet));
+      return level;
     });
+  };
+}
 
-    level.compositor.layers.push(createSpriteLayer(level.entities));
 
-    return level;
+function setupCollisionDetection(levelSpec, level) {
+  const mergedLayerTiles = levelSpec.layers.reduce((tiles, layer) => {
+    return tiles.concat(layer.tiles);
+  }, []);
+  const collisionGrid = createCollisionGrid(mergedLayerTiles, levelSpec.patterns);
+  level.setCollisionGrid(collisionGrid);
+}
+
+
+function setupBackgrounds(levelSpec, level, tileSet) {
+  levelSpec.layers.forEach(layer => {
+    const backgroundGrid = createBackgroundGrid(layer.tiles, levelSpec.patterns);
+    level.compositor.layers.push(createBackgroundLayer(level, backgroundGrid, tileSet));
   });
+}
+
+
+function setupEntities(levelSpec, level, entityFactory) {
+  levelSpec.entities.forEach(entity => {
+    const createEntity = entityFactory[entity.name];
+    entity.positions.forEach(([x, y]) => {
+      const newEntity = createEntity();
+      newEntity.pos.x = x;
+      newEntity.pos.y = y;
+
+      level.entities.push(newEntity);
+    });
+  });
+
+  level.compositor.layers.push(createSpriteLayer(level.entities));
 }
 
 
 function createCollisionGrid(tiles, patterns) {
   const grid = new Matrix();
 
-  for (const {x, y, tile} of expandTiles(tiles, patterns))
+  for (const {x, y, tile} of generateTiles(tiles, patterns))
     grid.set(x, y, {type: tile.type});
 
   return grid;
@@ -62,36 +88,30 @@ function createCollisionGrid(tiles, patterns) {
 function createBackgroundGrid(tiles, patterns) {
   const grid = new Matrix();
 
-  for (const {x, y, tile} of expandTiles(tiles, patterns))
+  for (const {x, y, tile} of generateTiles(tiles, patterns))
     grid.set(x, y, {name: tile.name});
 
   return grid;
 }
 
 
-function expandTiles(tiles, patterns) {
-  const expandedTiles = [];
-
-  function walkThroughTiles(tiles, xOffset, yOffset) {
-    tiles.forEach(tile => {
+function* generateTiles(tiles, patterns) {
+  function* walkThroughTiles(tiles, xOffset, yOffset) {
+    for (const tile of tiles) {
       if (tile.pattern) {
         const patternTiles = patterns[tile.pattern].tiles;
-        tile.positions.forEach(([x, y]) => {
-          walkThroughTiles(patternTiles, x, y);
-        });
+        for (const [x, y] of tile.positions)
+          yield* walkThroughTiles(patternTiles, x, y);
       }
       else {
-        tile.ranges.forEach(range => {
+        for (const range of tile.ranges)
           for (const {x, y} of generateCoords(range))
-            expandedTiles.push({x: x + xOffset, y: y + yOffset, tile});
-        });
+            yield {x: x + xOffset, y: y + yOffset, tile};
       }
-    });
+    }
   }
 
-  walkThroughTiles(tiles, 0, 0);
-
-  return expandedTiles;
+  yield* walkThroughTiles(tiles, 0, 0);
 }
 
 

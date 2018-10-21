@@ -1,6 +1,7 @@
 {
   "tileSet": "overworld",
   "backgroundColour": "#6B8CFF",
+
   "layers": [
     {
       "tiles" : [
@@ -202,6 +203,7 @@
       ]
     }
   ],
+
   "patterns": {
     "smallVertPipe": {
       "tiles": [
@@ -675,5 +677,21 @@
         }
       ]
     }
-  }
+  },
+
+  "entities": [
+    {
+      "name": "goomba",
+      "positions": [
+        [368, 0]
+      ]
+    },
+    {
+      "name": "koopa",
+      "positions": [
+        [368, 160],
+        [160, 160]
+      ]
+    }
+  ]
 }
