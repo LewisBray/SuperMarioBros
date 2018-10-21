@@ -22,11 +22,9 @@ function createKoopaFactory(animSpriteSet) {
     const koopa = new Entity(new Vec(128, 192), new Vec(0, 0), 16, 24);
     koopa.collisionBox.yOffset = 8;
 
-    koopa.addTrait(new AIWalk(-30));
+    koopa.addTrait(new AIWalk(30));
 
     koopa.draw = drawKoopa;
-
-    console.log(koopa);
 
     return koopa;
   }

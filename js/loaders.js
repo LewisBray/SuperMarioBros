@@ -1,6 +1,9 @@
 import Level from './level.js';
 import SpriteSet from './spriteset.js';
 import {Matrix} from './maths.js';
+import {loadMario} from './mario.js';
+import {loadGoomba} from './goomba.js';
+import {loadKoopa} from './koopa.js';
 import {animFrameSelectorFactory} from './animation.js';
 import {createBackgroundLayer, createSpriteLayer} from './layers.js';
 
@@ -132,5 +135,25 @@ export function loadSpriteSet(name, spriteWidth = 16, spriteHeight = 16) {
     }
 
     return tileSet;
+  });
+}
+
+
+export function loadEntities() {
+  const entityFactory = {};
+
+  function addEntity(name) {
+    return factory => {
+      entityFactory[name] = factory;
+    };
+  }
+
+  return Promise.all([
+    loadMario().then(addEntity('mario')),
+    loadGoomba().then(addEntity('goomba')),
+    loadKoopa().then(addEntity('koopa'))
+  ])
+  .then(() => {
+    return entityFactory;
   });
 }
