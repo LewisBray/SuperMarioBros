@@ -23,9 +23,15 @@ export default class Entity {
     })
   }
 
-  update(deltaTime) {
+  collideWithEntity(otherEntity) {
     this.traits.forEach(trait => {
-      trait.update(this, deltaTime);
+      trait.entityCollision(this, otherEntity);
+    })
+  }
+
+  update(deltaTime, level) {
+    this.traits.forEach(trait => {
+      trait.update(this, deltaTime, level);
     });
 
     this.lifetime += deltaTime;

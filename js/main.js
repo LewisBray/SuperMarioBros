@@ -31,8 +31,7 @@ async function main(canvas) {
   timer.update = function(deltaTime) {
     level.update(deltaTime);
 
-    if (mario.pos.x > 150)
-      camera.pos.x = mario.pos.x - 150;
+    camera.pos.x = Math.max(0, mario.pos.x - 150);
 
     // Fill in background background colour before drawing layers,
     // maybe make this a rudementary layer of its own?

@@ -4,7 +4,7 @@
 // loops all over all of these during the update of the entity
 
 // Base class for traits to inherit from
-class Trait {
+export class Trait {
   constructor(name) {
     this.name = name;
   }
@@ -13,9 +13,13 @@ class Trait {
     // Empty so traits don't have to be implemented if not necessary
   }
 
+  entityCollision(us, them) {
+
+  }
+
   // Make sure we override the update method in the derived class
-  update(deltaTime) {
-    console.warn('Unhandled trait update call.');
+  update(entity, deltaTime, level) {
+    // Empty so traits don't have to be implemented if not necessary
   }
 }
 
@@ -120,6 +124,7 @@ export class AIWalk extends Trait {
     super('aiWalk');
 
     this.speed = speed;
+    this.preDisableSpeed = speed;
   }
 
   collide(entity, side) {
@@ -128,6 +133,76 @@ export class AIWalk extends Trait {
   }
 
   update(entity, deltaTime) {
-    entity.vel.x = this.speed;
+      entity.vel.x = this.speed;
+  }
+
+  enable() {
+    this.speed = this.preDisableSpeed;
+  }
+
+  disable() {
+    this.preDisableSpeed = this.speed;
+    this.speed = 0;
+  }
+
+  isEnabled() {
+    return (this.speed !== 0);
+  }
+}
+
+
+export class Stomper extends Trait {
+  constructor() {
+    super('stomper');
+
+    this.bounceSpeed = 400;
+    this.shouldBounce = false;
+  }
+
+  bounce(us, them) {
+    us.collisionBox.bottom = them.collisionBox.top;
+    this.shouldBounce = true;
+  }
+
+  update(entity, deltaTime) {
+    if (this.shouldBounce) {
+      entity.vel.y = -this.bounceSpeed;
+      this.shouldBounce = false;
+    }
+  }
+}
+
+
+// Class needs to be extended to handle instant deaths (e.g.
+// from sliding koopa shells), could modify timeAfterDeathToremove ?
+export class Killable extends Trait {
+  constructor() {
+    super('killable');
+
+    this.dead = false;
+    this.timeDead = 0;
+    this.timeAfterDeathToRemove = 2;
+  }
+
+  kill() {
+    this.dead = true;
+  }
+
+  update(entity, deltaTime, level) {
+    if (this.dead) {
+      this.timeDead += deltaTime;
+      if (this.timeDead > this.timeAfterDeathToRemove)
+        level.removeEntity(entity);
+    }
+  }
+}
+
+
+export class Revivable extends Trait {
+  constructor() {
+    super('revivable');
+
+    this.timeDead = 0;
+    this.timeToRevival = 1;
   }
 }

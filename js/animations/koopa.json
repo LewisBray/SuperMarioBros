@@ -15,6 +15,18 @@
       "location": [315, 206],
       "width": 16,
       "height": 24
+    },
+    {
+      "name": "shell",
+      "location": [144, 206],
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "shellWithLegs",
+      "location": [163, 206],
+      "width": 16,
+      "height": 16
     }
   ],
 
@@ -25,6 +37,14 @@
       "frames": [
         "walk-1",
         "walk-2"
+      ]
+    },
+    {
+      "name": "wake",
+      "frameLength": 0.15,
+      "frames": [
+        "shell",
+        "shellWithLegs"
       ]
     }
   ]

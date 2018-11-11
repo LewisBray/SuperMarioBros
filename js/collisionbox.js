@@ -40,4 +40,11 @@ export default class CollisionBox {
   set right(x) {
     this.entityPos.x = x - this.entityWidth;
   }
+
+  overlaps(otherBox) {
+    return this.bottom > otherBox.top
+      && this.top < otherBox.bottom
+      && this.left < otherBox.right
+      && this.right > otherBox.left;
+  }
 }
