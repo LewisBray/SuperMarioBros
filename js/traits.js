@@ -144,10 +144,6 @@ export class AIWalk extends Trait {
     this.preDisableSpeed = this.speed;
     this.speed = 0;
   }
-
-  isEnabled() {
-    return (this.speed !== 0);
-  }
 }
 
 
