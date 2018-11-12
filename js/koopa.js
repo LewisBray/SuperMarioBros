@@ -1,6 +1,6 @@
 import Entity from './entity.js';
 import {Vec} from './maths.js';
-import {Trait, AIWalk, Killable} from './traits.js';
+import {Trait, CollidesWithTiles, AIWalk, Killable} from './traits.js';
 import {loadSpriteSet} from './loaders.js';
 
 
@@ -162,6 +162,7 @@ function createKoopaFactory(animSpriteSet) {
     const koopa = new Entity(new Vec(128, 192), new Vec(0, 0), 16, 24);
     koopa.collisionBox.yOffset = 8;
 
+    koopa.addTrait(new CollidesWithTiles());
     koopa.addTrait(new AIWalk(30));
     koopa.addTrait(new Killable());
     koopa.addTrait(new Behaviour());

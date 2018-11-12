@@ -12,6 +12,6 @@ export default class EntityCollider {
         subject.collideWithEntity(candidate);
         candidate.collideWithEntity(subject);
       }
-    })
+    });
   }
 }

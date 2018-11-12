@@ -9,7 +9,7 @@ export class Trait {
     this.name = name;
   }
 
-  collide(entity, side) {
+  tileCollision(entity, side) {
     // Empty so traits don't have to be implemented if not necessary
   }
 
@@ -49,7 +49,7 @@ export class Jump extends Trait {
     this.requestTime = 0;
   }
 
-  collide(entity, side) {
+  tileCollision(entity, side) {
     if (side === 'below') {
       this.ready = true;
       this.isJumping = false;
@@ -119,6 +119,7 @@ export class Move extends Trait {
 }
 
 
+// Need better name for this trait, it's movement that bounces off walls regardless of wallking
 export class AIWalk extends Trait {
   constructor(speed) {
     super('aiWalk');
@@ -127,7 +128,7 @@ export class AIWalk extends Trait {
     this.preDisableSpeed = speed;
   }
 
-  collide(entity, side) {
+  tileCollision(entity, side) {
     if (side === 'left' || side === 'right')
       this.speed *= -1;
   }
@@ -200,5 +201,36 @@ export class Revivable extends Trait {
 
     this.timeDead = 0;
     this.timeToRevival = 1;
+  }
+}
+
+
+export class CollidesWithTiles extends Trait {
+  constructor() {
+    super('collidesWithTiles');
+
+    this.enabled = true;
+  }
+
+  tileCollision(entity, side, tileCollidedWith) {
+    if (!this.enabled)
+      return;
+    
+    if (side === 'below') {
+      entity.vel.y = 0;
+      entity.collisionBox.bottom = tileCollidedWith.top;
+    }
+    else if (side === 'right') {
+      entity.vel.x = 0;
+      entity.collisionBox.right = tileCollidedWith.left;
+    }
+    else if (side === 'left') {
+      entity.vel.x = 0;
+      entity.collisionBox.left = tileCollidedWith.right;
+    }
+    else if (side === 'above') {
+      entity.vel.y = 0;
+      entity.collisionBox.top = tileCollidedWith.bottom;
+    }
   }
 }

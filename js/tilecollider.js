@@ -19,18 +19,12 @@ export default class TileCollider {
 
       if (entity.vel.x > 0) {
         if (entity.collisionBox.right > matchedTile.left) {
-          entity.vel.x = 0;
-          entity.collisionBox.right = matchedTile.left;
-
-          entity.collide('right');
+          entity.collideWithTile('right', matchedTile);
         }
       }
       else if (entity.vel.x < 0) {
         if (entity.collisionBox.left < matchedTile.right) {
-          entity.vel.x = 0;
-          entity.collisionBox.left = matchedTile.right;
-
-          entity.collide('left');
+          entity.collideWithTile('left', matchedTile);
         }
       }
     });
@@ -52,18 +46,12 @@ export default class TileCollider {
 
       if (entity.vel.y > 0) {
         if (entity.collisionBox.bottom > matchedTile.top) {
-          entity.vel.y = 0;
-          entity.collisionBox.bottom = matchedTile.top;
-
-          entity.collide('below');
+          entity.collideWithTile('below', matchedTile);
         }
       }
       else if (entity.vel.y < 0) {
         if (entity.collisionBox.top < matchedTile.bottom) {
-          entity.vel.y = 0;
-          entity.collisionBox.top = matchedTile.bottom;
-
-          entity.collide('above');
+          entity.collideWithTile('above', matchedTile);
         }
       }
     });

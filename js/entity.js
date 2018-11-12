@@ -17,15 +17,15 @@ export default class Entity {
     this[trait.name] = trait;
   }
 
-  collide(side) {
+  collideWithTile(side, tile) {
     this.traits.forEach(trait => {
-      trait.collide(this, side);
+      trait.tileCollision(this, side, tile);
     })
   }
 
-  collideWithEntity(otherEntity) {
+  collideWithEntity(entity) {
     this.traits.forEach(trait => {
-      trait.entityCollision(this, otherEntity);
+      trait.entityCollision(this, entity);
     })
   }
 

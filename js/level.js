@@ -39,7 +39,7 @@ export default class Level {
     });
 
     this.revivableEntities.forEach(entity => {
-      entity.revivable.timeDead += deltaTime;
+      entity.revivable.timeDead += deltaTime;       // this logic needs to be moved into trait class
       if (entity.revivable.timeDead > entity.revivable.timeToRevival)
         this.reviveEntity(entity);
     })
