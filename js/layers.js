@@ -1,12 +1,17 @@
-import {TileResolver} from './tilecollider.js';
 
 // Layers are not what they sound like, in this project layers are functions
 // which draw the actual tile/sprite graphical layers to a context.  These
 // functions are created and then added to an array of layers in the compositor.
 
-export function createBackgroundLayer(level, tiles, tileSet) {
-  const resolver = new TileResolver(tiles);
+export function createBackgroundColourLayer(backgroundColour) {
+  return (context, camera) => {
+    context.fillStyle = backgroundColour;
+    context.fillRect(0, 0, 26 * 16 + 16, 15 * 16);
+  };
+}
 
+
+export function createBackgroundLayer(level, tiles, tileSet) {
   const backgroundBuffer = document.createElement('canvas');
   backgroundBuffer.width = 26 * 16 + 16;    // Remove the + 16 later
   backgroundBuffer.height = 15 * 16;
@@ -51,9 +56,18 @@ export function createSpriteLayer(entities) {
 
 
 export function createCollisionLayer(level) {
-  const resolvedTiles = [];
+  const drawCollisionBoxes = createCollisionBoxLayer(level.entities);
+  const drawCollisionCandidateTileBoxes =
+    createCollisionCandidateTilesLayer(level.tileCollider.tiles);
 
-  const tileResolver = level.tileCollider.tiles;
+  return (context, camera) => {
+    drawCollisionCandidateTileBoxes(context, camera);
+    drawCollisionBoxes(context, camera);
+  };
+}
+
+function createCollisionCandidateTilesLayer(tileResolver) {
+  const resolvedTiles = [];
   const tileSize = tileResolver.tileSize;
 
   const getByIndexOriginal = tileResolver.getByIndex;
@@ -72,17 +86,21 @@ export function createCollisionLayer(level) {
       context.stroke();
     });
 
+    resolvedTiles.length = 0;
+  };
+}
+
+function createCollisionBoxLayer(entities) {
+  return (context, camera) => {
     context.strokeStyle = 'red';
-    level.entities.forEach(entity => {
+    entities.forEach(entity => {
       context.beginPath();
       context.rect(entity.collisionBox.left - camera.pos.x,
         entity.collisionBox.top - camera.pos.y,
         entity.collisionBox.right - entity.collisionBox.left,
         entity.collisionBox.bottom - entity.collisionBox.top);
       context.stroke();
-    })
-
-    resolvedTiles.length = 0;
+    });
   };
 }
 

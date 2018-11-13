@@ -17,9 +17,8 @@ export class Trait {
 
   }
 
-  // Make sure we override the update method in the derived class
   update(entity, deltaTime, level) {
-    // Empty so traits don't have to be implemented if not necessary
+    
   }
 }
 
@@ -58,7 +57,7 @@ export class Jump extends Trait {
       this.cancel();
   }
 
-  update(entity, deltaTime) {
+  update(entity, deltaTime, level) {
     if (this.requestTime > 0) {
       if (this.ready) {
         this.engageTime = this.duration;
@@ -90,7 +89,7 @@ export class Move extends Trait {
     this.heading = 1;
   }
 
-  update(entity, deltaTime) {
+  update(entity, deltaTime, level) {
     const absXVel = Math.abs(entity.vel.x);
 
     if (this.direction !== 0) {
@@ -133,7 +132,7 @@ export class AIWalk extends Trait {
       this.speed *= -1;
   }
 
-  update(entity, deltaTime) {
+  update(entity, deltaTime, level) {
       entity.vel.x = this.speed;
   }
 
@@ -161,7 +160,7 @@ export class Stomper extends Trait {
     this.shouldBounce = true;
   }
 
-  update(entity, deltaTime) {
+  update(entity, deltaTime, level) {
     if (this.shouldBounce) {
       entity.vel.y = -this.bounceSpeed;
       this.shouldBounce = false;
@@ -199,8 +198,18 @@ export class Revivable extends Trait {
   constructor() {
     super('revivable');
 
-    this.timeDead = 0;
-    this.timeToRevival = 1;
+    this.timeOutOfGame = 0;
+    this.timeTilRevival = 1;
+  }
+
+  update(entity, deltaTime, level) {
+    if (level.revivableEntities.includes(entity))
+      this.timeOutOfGame += deltaTime;
+    
+    if (this.timeOutOfGame > this.timeTilRevival) {
+      this.timeOutOfGame = 0;
+      level.reviveEntity(entity);
+    }
   }
 }
 

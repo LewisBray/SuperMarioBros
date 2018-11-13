@@ -5,11 +5,8 @@ import {loadMario} from './mario.js';
 import {loadGoomba} from './goomba.js';
 import {loadKoopa} from './koopa.js';
 import {animFrameSelectorFactory} from './animation.js';
-import {createBackgroundLayer, createSpriteLayer} from './layers.js';
+import {createBackgroundColourLayer, createBackgroundLayer, createSpriteLayer} from './layers.js';
 
-
-// Functions which load resources and return promises so we
-// can load everything in parallel at the start of a level
 
 export function loadImage(url) {
   return new Promise(resolve => {
@@ -30,7 +27,7 @@ export function createLevelLoader(entityFactory) {
       loadSpriteSet(`/js/tilesets/${levelSpec.tileSet}.json`)
     ]))
     .then(([levelSpec, tileSet]) => {
-      const level = new Level(levelSpec.backgroundColour);
+      const level = new Level();
 
       setupCollisionDetection(levelSpec, level);
       setupBackgrounds(levelSpec, level, tileSet);
@@ -52,6 +49,8 @@ function setupCollisionDetection(levelSpec, level) {
 
 
 function setupBackgrounds(levelSpec, level, tileSet) {
+  level.compositor.layers.push(createBackgroundColourLayer(levelSpec.backgroundColour));
+
   levelSpec.layers.forEach(layer => {
     const backgroundGrid = createBackgroundGrid(layer.tiles, levelSpec.patterns);
     level.compositor.layers.push(createBackgroundLayer(level, backgroundGrid, tileSet));

@@ -5,10 +5,9 @@ import Compositor from './compositor.js';
 
 // Handles all aspects of a level (background, entities, etc...)
 export default class Level {
-  constructor(backgroundColour) {
+  constructor() {
     this.gravity = 1500;
     this.totalTime = 0;
-    this.backgroundColour = backgroundColour;
 
     this.compositor = new Compositor();
     this.entities = [];
@@ -39,10 +38,8 @@ export default class Level {
     });
 
     this.revivableEntities.forEach(entity => {
-      entity.revivable.timeDead += deltaTime;       // this logic needs to be moved into trait class
-      if (entity.revivable.timeDead > entity.revivable.timeToRevival)
-        this.reviveEntity(entity);
-    })
+      entity.revivable.update(entity, deltaTime, this);
+    });
 
     this.totalTime += deltaTime;
   }
@@ -56,10 +53,14 @@ export default class Level {
   }
 
   reviveEntity(entity) {
-    entity.revivable.timeDead = 0;
+    if (!this.revivableEntities.includes(entity))
+      return;
+    
     entity.killable.dead = false;
     entity.killable.timeDead = 0;
     entity.pos.y = 32;
+    entity.vel.x = 0;
+    entity.vel.y = 0;
 
     this.entities.push(entity);
 

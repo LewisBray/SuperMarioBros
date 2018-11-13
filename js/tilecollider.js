@@ -1,3 +1,4 @@
+
 export default class TileCollider {
   constructor(tileMatrix) {
     this.tiles = new TileResolver(tileMatrix);

@@ -1,5 +1,5 @@
-import {Vec} from './maths.js';
 
+// Class for dealing with collison box logic
 export default class CollisionBox {
   constructor(entityPos, entityWidth, entityHeight, xOffset = 0, yOffset = 0) {
     this.entityPos = entityPos;

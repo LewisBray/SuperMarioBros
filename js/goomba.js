@@ -1,7 +1,7 @@
 import Entity from './entity.js';
 import {Vec} from './maths.js';
-import {Trait, CollidesWithTiles, AIWalk, Killable} from './traits.js';
 import {loadSpriteSet} from './loaders.js';
+import {Trait, CollidesWithTiles, AIWalk, Killable} from './traits.js';
 
 
 export function loadGoomba() {
