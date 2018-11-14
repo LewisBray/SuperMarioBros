@@ -1,23 +1,40 @@
 import Timer from './timer.js';
 import Camera from './camera.js';
 import {Vec} from './maths.js';
-import {loadEntities, createLevelLoader} from './loaders.js';
 import {setupKeyboardInput} from './keyhandler.js';
 import {setupMouseControls} from './debug.js';
-import {createCollisionLayer, createCameraLayer} from './layers.js';
+import {loadFont, loadEntities, createLevelLoader} from './loaders.js';
+import {createCollisionLayer, createCameraLayer, createHUDLayer} from './layers.js';
 
-// Left off 9 mins in
+// List of features to add (for first level at least)
+//  - timer (feature of level class?)
+//  - coin counter (feature of level class?)
+//  - lives (feature of mario?)
+//  - death on falling into pit (part of killable trait?)
+//  - entry into pipes (no idea yet)
+//  - extra rooms (like pipe leading to underground room with coins)
+//  - death animations
+//  - instant death in certain situations
+//  - coins
+//  - power-ups
+//  - interactable blocks (question blocks, bricks, etc...)
+//  - flagpole/level completion animation
+//  - score counting
+//  - music
+//  - sound effects
 
 
 async function main(canvas) {
   const context = canvas.getContext('2d');
 
-  const createEntity = await loadEntities();
+  const [createEntity, fontSet] = await Promise.all([
+    loadEntities(),
+    loadFont()
+  ]);
   const loadLevel = await createLevelLoader(createEntity);
   const level = await loadLevel('1-1');
 
   const camera = new Camera(new Vec(0, 0), new Vec(26 * 16, 15 * 16));
-  window.camera = camera;
 
   const mario = createEntity.mario();
   const inputHandler = setupKeyboardInput(mario);
@@ -26,6 +43,7 @@ async function main(canvas) {
 
   level.compositor.layers.push(createCollisionLayer(level));
   level.compositor.layers.push(createCameraLayer(camera));
+  level.compositor.layers.push(createHUDLayer(fontSet));
 
   level.entities.push(mario);
 
@@ -34,11 +52,6 @@ async function main(canvas) {
     level.update(deltaTime);
 
     camera.pos.x = Math.max(0, mario.pos.x - 150);
-
-    // Fill in background background colour before drawing layers,
-    // maybe make this a rudementary layer of its own?
-    // context.fillStyle = level.backgroundColour;
-    // context.fillRect(0, 0, 26 * 16 + 16, 15 * 16);
 
     level.compositor.draw(context, camera);
   };

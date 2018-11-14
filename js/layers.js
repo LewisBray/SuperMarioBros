@@ -3,6 +3,29 @@
 // which draw the actual tile/sprite graphical layers to a context.  These
 // functions are created and then added to an array of layers in the compositor.
 
+const Line1 = 8;
+const Line2 = 16;
+
+export function createHUDLayer(font) {
+  return (context, camera) => {
+    font.print('MARIO', context, 3 * 8, Line1);
+    const score = 0;
+    font.print(score.toString().padStart(6, '0'), context, 3 * 8, Line2);
+
+    font.print('WORLD', context, 32 * 8, Line1);
+    const level = '1-1';
+    font.print(level, context, 33 * 8, Line2);
+
+    const numCoins = 1;
+    font.print('@x' + numCoins.toString().padStart(2, '0'), context, 18 * 8, Line2);
+
+    font.print('TIME', context, 45 * 8, Line1);
+    const time = 0;
+    font.print(time.toString().padStart(3, '0'), context, 46 * 8, Line2);
+  };
+}
+
+
 export function createBackgroundColourLayer(backgroundColour) {
   return (context, camera) => {
     context.fillStyle = backgroundColour;

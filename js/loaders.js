@@ -1,3 +1,4 @@
+import Font from './font.js';
 import Level from './level.js';
 import SpriteSet from './spriteset.js';
 import {Matrix} from './maths.js';
@@ -15,6 +16,32 @@ export function loadImage(url) {
       resolve(image);
     });
     image.src = url;
+  });
+}
+
+
+const loadableCharacters =
+  ' !"#$%&\'()*+,-./' +
+  '0123456789:;<=>?' +
+  '@ABCDEFGHIJKLMNO' +
+  'PQRSTUVWXYZ[\\]^_' +
+  '`abcdefghijklmno' +
+  'pqrstuvwxyz{¦}~|';
+
+export function loadFont() {
+  return loadImage('./js/images/fontset.png')
+  .then(fontSetImage => {
+    const fontSet = new SpriteSet(fontSetImage);
+
+    const size = 8;
+    const imageWidth = fontSetImage.width;
+    for (let [index, character] of [...loadableCharacters].entries()) {
+      const xPos = index * size % imageWidth;
+      const yPos = Math.floor(index * size / imageWidth) * size;
+      fontSet.define(character, xPos, yPos, size, size);
+    }
+
+    return new Font(fontSet, size);
   });
 }
 
