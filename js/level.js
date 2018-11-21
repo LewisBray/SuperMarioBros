@@ -23,14 +23,6 @@ export default class Level {
   update(deltaTime) {
     this.entities.forEach(entity => {
       entity.update(deltaTime, this);
-
-      entity.pos.x += entity.vel.x * deltaTime;
-      this.tileCollider.checkX(entity);
-
-      entity.pos.y += entity.vel.y * deltaTime;
-      this.tileCollider.checkY(entity);
-
-      entity.vel.y += this.gravity * deltaTime;
     });
 
     this.entities.forEach(entity => {
@@ -38,7 +30,7 @@ export default class Level {
     });
 
     this.revivableEntities.forEach(entity => {
-      entity.revivable.update(entity, deltaTime, this);
+      entity.revivable.update(entity, deltaTime, this);   // make revivable trait work in update call...
     });
 
     this.totalTime += deltaTime;

@@ -5,6 +5,7 @@ import {Matrix} from './maths.js';
 import {loadMario} from './mario.js';
 import {loadGoomba} from './goomba.js';
 import {loadKoopa} from './koopa.js';
+import {loadCoin} from './coin.js';
 import {animFrameSelectorFactory} from './animation.js';
 import {createBackgroundColourLayer, createBackgroundLayer, createSpriteLayer} from './layers.js';
 
@@ -89,10 +90,11 @@ function setupEntities(levelSpec, level, entityFactory) {
   levelSpec.entities.forEach(entity => {
     const createEntity = entityFactory[entity.name];
     entity.positions.forEach(([x, y]) => {
+      
       const newEntity = createEntity();
       newEntity.pos.x = x;
       newEntity.pos.y = y;
-
+      
       level.entities.push(newEntity);
     });
   });
@@ -187,7 +189,7 @@ export function loadSpriteSet(name, spriteWidth = 16, spriteHeight = 16) {
 
 export function loadEntities() {
   const entityFactory = {};
-
+  
   function addEntity(name) {
     return factory => {
       entityFactory[name] = factory;
@@ -197,7 +199,8 @@ export function loadEntities() {
   return Promise.all([
     loadMario().then(addEntity('mario')),
     loadGoomba().then(addEntity('goomba')),
-    loadKoopa().then(addEntity('koopa'))
+    loadKoopa().then(addEntity('koopa')),
+    loadCoin().then(addEntity('coin'))
   ])
   .then(() => {
     return entityFactory;

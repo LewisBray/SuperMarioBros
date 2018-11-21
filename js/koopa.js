@@ -1,7 +1,7 @@
 import Entity from './entity.js';
 import {Vec} from './maths.js';
 import {loadSpriteSet} from './loaders.js';
-import {Trait, CollidesWithTiles, AIWalk, Killable} from './traits.js';
+import {Trait, CollidesWithTiles, HasMass, AIWalk, Killable} from './traits.js';
 
 
 const Walking = Symbol('walking');
@@ -15,6 +15,7 @@ export function loadKoopa() {
 }
 
 
+// I seem to have broken the behaviour where jumping on koopa in shell doesn't kill mario instantly...
 class Behaviour extends Trait {
   constructor() {
     super('behaviour');
@@ -162,10 +163,11 @@ function createKoopaFactory(animSpriteSet) {
     const koopa = new Entity(new Vec(128, 192), new Vec(0, 0), 16, 24);
     koopa.collisionBox.yOffset = 8;
 
-    koopa.addTrait(new CollidesWithTiles());
     koopa.addTrait(new AIWalk(30));
     koopa.addTrait(new Killable());
     koopa.addTrait(new Behaviour());
+    koopa.addTrait(new CollidesWithTiles());
+    koopa.addTrait(new HasMass());
 
     koopa.draw = drawKoopa;
 

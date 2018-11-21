@@ -221,6 +221,14 @@ export class CollidesWithTiles extends Trait {
     this.enabled = true;
   }
 
+  update(entity, deltaTime, level) {
+    entity.pos.x += entity.vel.x * deltaTime;
+    level.tileCollider.checkX(entity);
+
+    entity.pos.y += entity.vel.y * deltaTime;
+    level.tileCollider.checkY(entity);
+  }
+
   tileCollision(entity, side, tileCollidedWith) {
     if (!this.enabled)
       return;
@@ -241,5 +249,27 @@ export class CollidesWithTiles extends Trait {
       entity.vel.y = 0;
       entity.collisionBox.top = tileCollidedWith.bottom;
     }
+  }
+}
+
+
+// I think this may have to be added to entity traits after CollidesWithTiles
+// need to check though...
+export class HasMass extends Trait {
+  constructor() {
+    super('hasMass');
+  }
+
+  update(entity, deltaTime, level) {
+    entity.vel.y += level.gravity * deltaTime;
+  }
+}
+
+
+export class Collector extends Trait {
+  constructor() {
+    super('collector');
+
+    this.coinsCollected = 0;
   }
 }

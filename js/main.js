@@ -7,15 +7,12 @@ import {loadFont, loadEntities, createLevelLoader} from './loaders.js';
 import {createCollisionLayer, createCameraLayer, createHUDLayer} from './layers.js';
 
 // List of features to add (for first level at least)
-//  - timer (feature of level class?)
-//  - coin counter (feature of level class?)
 //  - lives (feature of mario?)
 //  - death on falling into pit (part of killable trait?)
 //  - entry into pipes (no idea yet)
 //  - extra rooms (like pipe leading to underground room with coins)
 //  - death animations
 //  - instant death in certain situations
-//  - coins
 //  - power-ups
 //  - interactable blocks (question blocks, bricks, etc...)
 //  - flagpole/level completion animation
@@ -27,10 +24,7 @@ import {createCollisionLayer, createCameraLayer, createHUDLayer} from './layers.
 async function main(canvas) {
   const context = canvas.getContext('2d');
 
-  const [createEntity, fontSet] = await Promise.all([
-    loadEntities(),
-    loadFont()
-  ]);
+  const [createEntity, fontSet] = await Promise.all([loadEntities(), loadFont()]);
   const loadLevel = await createLevelLoader(createEntity);
   const level = await loadLevel('1-1');
 
@@ -43,7 +37,7 @@ async function main(canvas) {
 
   level.compositor.layers.push(createCollisionLayer(level));
   level.compositor.layers.push(createCameraLayer(camera));
-  level.compositor.layers.push(createHUDLayer(fontSet));
+  level.compositor.layers.push(createHUDLayer(fontSet, level));
 
   level.entities.push(mario);
 
