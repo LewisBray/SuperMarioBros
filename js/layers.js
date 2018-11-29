@@ -14,8 +14,7 @@ export function createHUDLayer(font, level) {
     font.print(score.toString().padStart(6, '0'), context, 3 * 8, Line2);
 
     font.print('WORLD', context, 32 * 8, Line1);
-    const levelName = '1-1';
-    font.print(levelName, context, 33 * 8, Line2);
+    font.print(level.name, context, 33 * 8, Line2);
 
     const numCoins = addUpCoinsCollected(level.entities);
     font.print('@x' + numCoins.toString().padStart(2, '0'), context, 18 * 8, Line2);  // use coin instead of '@'

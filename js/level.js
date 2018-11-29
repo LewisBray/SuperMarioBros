@@ -8,6 +8,7 @@ export default class Level {
   constructor() {
     this.gravity = 1500;
     this.totalTime = 0;
+    this.name = '';
 
     this.compositor = new Compositor();
     this.entities = [];
@@ -30,7 +31,7 @@ export default class Level {
     });
 
     this.revivableEntities.forEach(entity => {
-      entity.revivable.update(entity, deltaTime, this);   // make revivable trait work in update call...
+      entity.revivable.update(entity, deltaTime, this);
     });
 
     this.totalTime += deltaTime;
