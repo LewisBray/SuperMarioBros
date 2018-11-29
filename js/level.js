@@ -9,6 +9,7 @@ export default class Level {
     this.gravity = 1500;
     this.totalTime = 0;
     this.name = '';
+    this.length = 0;
 
     this.compositor = new Compositor();
     this.entities = [];

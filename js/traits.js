@@ -273,3 +273,21 @@ export class Collector extends Trait {
     this.coinsCollected = 0;
   }
 }
+
+
+export class StuckInLevel extends Trait {
+  constructor() {
+    super('behaviour');
+  }
+
+  update(entity, deltaTime, level) {
+    if (entity.collisionBox.left < 0) {
+      entity.collisionBox.left = 0;
+      entity.vel.x = 0;
+    }
+    else if (entity.collisionBox.right > 16 * level.length) {
+      entity.collisionBox.right = 16 * level.length;
+      entity.vel.x = 0;
+    }
+  }
+}

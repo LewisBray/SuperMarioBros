@@ -57,6 +57,7 @@ export function createLevelLoader(entityFactory) {
     .then(([levelSpec, tileSet]) => {
       const level = new Level();
       level.name = levelName;
+      level.length = levelSpec.length;
 
       setupCollisionDetection(levelSpec, level);
       setupBackgrounds(levelSpec, level, tileSet);

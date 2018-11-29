@@ -1,6 +1,7 @@
 {
   "tileSet": "overworld",
   "backgroundColour": "#6B8CFF",
+  "length": 212,
 
   "layers": [
     {
