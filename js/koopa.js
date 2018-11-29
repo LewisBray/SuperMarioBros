@@ -14,7 +14,6 @@ export function loadKoopa() {
 }
 
 
-// I seem to have broken the behaviour where jumping on koopa in shell doesn't kill mario instantly...
 class Behaviour extends Trait {
   constructor() {
     super('behaviour');
@@ -23,17 +22,13 @@ class Behaviour extends Trait {
     this.timeInShell = 0;
     this.inShellDuration = 5;
     this.collisionDisabledTime = 0;
-    this.collisionDisabledDuration = 0.5; // Need to tweak the length of this, currently too long
-    this.entityCollisionDisabled = false; // Disable collision to allow Mario to fallthrough and push shell, make property of Entity class?
+    this.collisionDisabledDuration = 0.1; // Need to tweak the length of this
     this.walkSpeed = 30;                  // This really comes from AIWalk initialisation, make property of Koopa?
     this.shellPushSpeed = 150;
   }
 
   entityCollision(us, them) {
     if (us.killable && us.killable.dead)
-      return;
-    
-    if (this.entityCollisionDisabled)
       return;
 
     if (this.state === Walking)
@@ -55,12 +50,12 @@ class Behaviour extends Trait {
     }
     else if (this.state === Sliding) {
       this.timeInShell = 0;
-      if (this.entityCollisionDisabled)
+      if (!us.entityCollisionEnabled)
         this.collisionDisabledTime -= deltaTime;
     }
 
     if (this.collisionDisabledTime <= 0)
-      this.entityCollisionDisabled = false;
+      us.entityCollisionEnabled = true;
     
     if (this.timeInShell > this.inShellDuration)
       this.comeOutOfShell(us);
@@ -77,7 +72,7 @@ class Behaviour extends Trait {
     }
     else {
       if (them.killable)
-        them.killable.kill();
+        them.killable.kill(0);
     }
   }
 
@@ -88,7 +83,7 @@ class Behaviour extends Trait {
     const theyJumpedIntoUsFromBelow = (them.vel.y < 0);
     if (theyJumpedIntoUsFromBelow) {
       if (them.killable)
-        them.killable.kill();
+        them.killable.kill(0);
     }
     else
       this.startSliding(us, them);
@@ -96,13 +91,23 @@ class Behaviour extends Trait {
 
   handleSlidingCollision(us, them) {
     const theyJumpedOnUs = (them.vel.y > us.vel.y);
-    if (theyJumpedOnUs) {
+    if (theyJumpedOnUs && them.stomper) {
       this.stopSliding(us)
       them.stomper.bounce(them, us);
     }
     else {
-      if (them.killable)
-        them.killable.kill();
+      if (them.killable) {
+        if (them.stomper)
+          them.killable.kill(0);     // treat Mario differently
+        else {
+          them.killable.kill(2, true);
+          them.entityCollisionEnabled = false;
+          them.vel.y = -150;
+          them.aiWalk.speed = 150 * Math.sign(us.vel.x);
+          if (them.collidesWithTiles)
+            them.collidesWithTiles.enabled = false;
+        }
+      }
     }
   }
 
@@ -116,7 +121,7 @@ class Behaviour extends Trait {
 
     this.state = Sliding;
     this.collisionDisabledTime = this.collisionDisabledDuration;
-    this.entityCollisionDisabled = true;
+    us.entityCollisionEnabled = false;
   }
 
   stopSliding(us) {
@@ -143,6 +148,9 @@ function createKoopaFactory(animSpriteSet) {
   const wakeAnimFrameSelector = animSpriteSet.animations.get('wake');
 
   function selectAnimFrame(koopa) {
+    if (koopa.killable.dead)
+      return 'shell';
+    
     if (koopa.behaviour.state === StationaryInShell || koopa.behaviour.state === Sliding) {
       if (koopa.behaviour.timeInShell > 3)
         return wakeAnimFrameSelector(koopa.behaviour.timeInShell);

@@ -11,6 +11,7 @@ export default class Entity {
     this.lifetime = 0;
     this.traits = [];
     this.collisionBox = new CollisionBox(this.pos, this.width, this.height);
+    this.entityCollisionEnabled = true;
   }
 
   addTrait(trait) {

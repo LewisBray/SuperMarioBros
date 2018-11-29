@@ -7,6 +7,9 @@ export default class EntityCollider {
     this.entities.forEach(candidate => {
       if (subject === candidate)
         return;
+      
+      if (!subject.entityCollisionEnabled || !candidate.entityCollisionEnabled)
+        return;
 
       if (subject.collisionBox.overlaps(candidate.collisionBox)) {
         subject.collideWithEntity(candidate);

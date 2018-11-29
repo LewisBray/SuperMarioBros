@@ -170,18 +170,21 @@ export class Stomper extends Trait {
 
 
 // Class needs to be extended to handle instant deaths (e.g.
-// from sliding koopa shells), could modify timeAfterDeathToremove ?
+// from sliding koopa shells), could modify timeAfterDeathToRemove ?
 export class Killable extends Trait {
   constructor() {
     super('killable');
 
     this.dead = false;
+    this.collisionDeath = false;
     this.timeDead = 0;
     this.timeAfterDeathToRemove = 2;
   }
 
-  kill() {
+  kill(timeAfterDeathToRemove = 2, collisionDeath = false) {
     this.dead = true;
+    this.collisionDeath = collisionDeath;
+    this.timeAfterDeathToRemove = timeAfterDeathToRemove;
   }
 
   update(entity, deltaTime, level) {
@@ -190,6 +193,8 @@ export class Killable extends Trait {
       if (this.timeDead > this.timeAfterDeathToRemove)
         level.removeEntity(entity);
     }
+    else if (entity.pos.y > 15 * 16)
+      this.kill();
   }
 }
 

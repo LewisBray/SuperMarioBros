@@ -17,16 +17,17 @@ class Behaviour extends Trait {
   entityCollision(us, them) {
     if (us.killable && us.killable.dead)
       return;
+    
+    if (!them.stomper)
+      return;
 
-    if (them.stomper) {
-      if (them.vel.y > us.vel.y) {
-        us.aiWalk.disable();
-        us.killable.kill();
-        them.stomper.bounce(them, us);
-      }
-      else if (them.killable)
-        them.killable.kill();
+    if (them.vel.y > us.vel.y) {
+      us.aiWalk.disable();
+      us.killable.kill(2);
+      them.stomper.bounce(them, us);
     }
+    else if (them.killable)
+      them.killable.kill(0);
   }
 }
 
@@ -35,8 +36,12 @@ function createGoombaFactory(animSpriteSet) {
   const walkAnimFrameSelector = animSpriteSet.animations.get('walk');
 
   function selectAnimFrame(goomba) {
-    if (goomba.killable.dead)
-      return 'squashed';        // Shouldn't be returned if slammed into by koopa shell
+    if (goomba.killable && goomba.killable.dead) {
+      if (goomba.killable.collisionDeath)
+        return 'walk-1';        // should this be upside down?
+      else
+        return 'squashed';
+    }
 
     return walkAnimFrameSelector(goomba.lifetime);
   }
