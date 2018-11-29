@@ -8,18 +8,16 @@ import {createCollisionLayer, createCameraLayer, createHUDLayer} from './layers.
 
 // List of features to add (for first level at least)
 //  - lives (feature of mario?)
-//  - death on falling into pit (part of killable trait?)
 //  - entry into pipes (no idea yet)
 //  - extra rooms (like pipe leading to underground room with coins)
 //  - death animations
-//  - instant death in certain situations
+//  - instant death in certain situations (need entity to fly off screen when instant death [when not mario])
 //  - power-ups
 //  - interactable blocks (question blocks, bricks, etc...)
 //  - flagpole/level completion animation
 //  - score counting
 //  - music
 //  - sound effects
-
 
 async function main(canvas) {
   const context = canvas.getContext('2d');
@@ -40,13 +38,11 @@ async function main(canvas) {
   level.compositor.layers.push(createHUDLayer(fontSet, level));
 
   level.entities.push(mario);
-
+  
   const timer = new Timer(1/60);
   timer.update = function(deltaTime) {
     level.update(deltaTime);
-
-    camera.pos.x = Math.max(0, mario.pos.x - 150);
-
+    camera.followEntity(mario, level.length);
     level.compositor.draw(context, camera);
   };
 
