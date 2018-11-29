@@ -1,5 +1,4 @@
 import Entity from './entity.js';
-import {Vec} from './maths.js';
 import {loadSpriteSet} from './loaders.js';
 import {Trait, CollidesWithTiles, HasMass, AIWalk, Killable} from './traits.js';
 
@@ -48,7 +47,7 @@ function createGoombaFactory(animSpriteSet) {
   }
 
   return () => {
-    const goomba = new Entity(new Vec(128, 160), new Vec(0, 0), 16, 16);
+    const goomba = new Entity(16, 16);
 
     goomba.addTrait(new AIWalk(-30));
     goomba.addTrait(new Behaviour());

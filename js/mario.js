@@ -1,5 +1,4 @@
 import Entity from './entity.js';
-import {Vec} from './maths.js';
 import {loadSpriteSet} from './loaders.js';
 import {Jump, Move, CollidesWithTiles, HasMass, Stomper, Killable, Revivable, Collector} from './traits.js';
 
@@ -45,7 +44,7 @@ function createMarioFactory(animSpriteSet) {
   }
 
   return () => {
-    const mario = new Entity(new Vec(64, 140), new Vec(0, 0), 16, 16);
+    const mario = new Entity(16, 16);
 
     mario.addTrait(new Move());
     mario.addTrait(new Jump());

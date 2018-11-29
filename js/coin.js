@@ -1,5 +1,4 @@
 import Entity from './entity.js';
-import {Vec} from './maths.js';
 import {loadSpriteSet} from './loaders.js';
 import {Trait} from './traits.js';
 
@@ -43,7 +42,7 @@ function createCoinFactory(animSpriteSet) {
   }
 
   return () => {
-    const coin = new Entity(new Vec(128, 160), new Vec(0, 0), 16, 16);
+    const coin = new Entity(16, 16);
 
     coin.addTrait(new Behaviour());
 
