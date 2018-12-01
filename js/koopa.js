@@ -1,6 +1,6 @@
 import Entity from './entity.js';
 import {loadSpriteSet} from './loaders.js';
-import {Trait, CollidesWithTiles, HasMass, AIWalk, Killable} from './traits.js';
+import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, AIWalk, Killable} from './traits.js';
 
 
 const Walking = Symbol('walking');
@@ -21,8 +21,6 @@ class Behaviour extends Trait {
     this.state = Walking;
     this.timeInShell = 0;
     this.inShellDuration = 5;
-    this.collisionDisabledTime = 0;
-    this.collisionDisabledDuration = 0.1; // Need to tweak the length of this
     this.walkSpeed = 30;                  // This really comes from AIWalk initialisation, make property of Koopa?
     this.shellPushSpeed = 150;
   }
@@ -50,12 +48,7 @@ class Behaviour extends Trait {
     }
     else if (this.state === Sliding) {
       this.timeInShell = 0;
-      if (!us.entityCollisionEnabled)
-        this.collisionDisabledTime -= deltaTime;
     }
-
-    if (this.collisionDisabledTime <= 0)
-      us.entityCollisionEnabled = true;
     
     if (this.timeInShell > this.inShellDuration)
       this.comeOutOfShell(us);
@@ -101,7 +94,7 @@ class Behaviour extends Trait {
           them.killable.kill(0);     // treat Mario differently
         else {
           them.killable.kill(2, true);
-          them.entityCollisionEnabled = false;
+          them.collidesWithEntities.enabled = false;
           them.vel.y = -150;
           them.aiWalk.speed = 150 * Math.sign(us.vel.x);
           if (them.collidesWithTiles)
@@ -120,8 +113,7 @@ class Behaviour extends Trait {
     us.aiWalk.speed = this.shellPushDirection(us, them) * this.shellPushSpeed;
 
     this.state = Sliding;
-    this.collisionDisabledTime = this.collisionDisabledDuration;
-    us.entityCollisionEnabled = false;
+    us.collidesWithEntities.disableTemporarily(0.1);
   }
 
   stopSliding(us) {
@@ -154,8 +146,8 @@ function createKoopaFactory(animSpriteSet) {
     if (koopa.behaviour.state === StationaryInShell || koopa.behaviour.state === Sliding) {
       if (koopa.behaviour.timeInShell > 3)
         return wakeAnimFrameSelector(koopa.behaviour.timeInShell);
-      
-      return 'shell';
+      else
+        return 'shell';
     }
     
     return walkAnimFrameSelector(koopa.lifetime);
@@ -175,6 +167,7 @@ function createKoopaFactory(animSpriteSet) {
     koopa.addTrait(new Behaviour());
     koopa.addTrait(new CollidesWithTiles());
     koopa.addTrait(new HasMass());
+    koopa.addTrait(new CollidesWithEntities());
 
     koopa.draw = drawKoopa;
 

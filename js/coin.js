@@ -1,6 +1,6 @@
 import Entity from './entity.js';
 import {loadSpriteSet} from './loaders.js';
-import {Trait} from './traits.js';
+import {Trait, CollidesWithEntities} from './traits.js';
 
 
 export function loadCoin() {
@@ -45,6 +45,7 @@ function createCoinFactory(animSpriteSet) {
     const coin = new Entity(16, 16);
 
     coin.addTrait(new Behaviour());
+    coin.addTrait(new CollidesWithEntities());
 
     coin.draw = drawCoin;
 

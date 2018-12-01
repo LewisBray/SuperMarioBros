@@ -8,8 +8,8 @@ export default class EntityCollider {
       if (subject === candidate)
         return;
       
-      if (!subject.entityCollisionEnabled || !candidate.entityCollisionEnabled)
-        return;
+      if (!candidate.collidesWithEntities.enabled)    // don't need to check subject as check won't get...
+        return;                                       // ...called from trait if entity collision disabled
 
       if (subject.collisionBox.overlaps(candidate.collisionBox)) {
         subject.collideWithEntity(candidate);

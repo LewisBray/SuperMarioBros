@@ -9,7 +9,7 @@ export class Trait {
     this.name = name;
   }
 
-  tileCollision(entity, side) {
+  tileCollision(entity, side, tileCollidedWith) {
     // Empty so traits don't have to be implemented if not necessary
   }
 
@@ -48,7 +48,7 @@ export class Jump extends Trait {
     this.requestTime = 0;
   }
 
-  tileCollision(entity, side) {
+  tileCollision(entity, side, tileCollidedWith) {
     if (side === 'below') {
       this.ready = true;
       this.isJumping = false;
@@ -127,7 +127,7 @@ export class AIWalk extends Trait {
     this.preDisableSpeed = speed;
   }
 
-  tileCollision(entity, side) {
+  tileCollision(entity, side, tileCollidedWith) {
     if (side === 'left' || side === 'right')
       this.speed *= -1;
   }
@@ -226,7 +226,7 @@ export class CollidesWithTiles extends Trait {
     this.enabled = true;
   }
 
-  update(entity, deltaTime, level) {
+  update(entity, deltaTime, level) {          // really awkward position gets updated here, not sure what to do...
     entity.pos.x += entity.vel.x * deltaTime;
     level.tileCollider.checkX(entity);
 
@@ -254,6 +254,37 @@ export class CollidesWithTiles extends Trait {
       entity.vel.y = 0;
       entity.collisionBox.top = tileCollidedWith.bottom;
     }
+  }
+}
+
+
+export class CollidesWithEntities extends Trait {
+  constructor() {
+    super('collidesWithEntities')
+
+    this.enabled = true;
+    this.temporarilyDisabled = false;
+    this.timeDisabled = 0;
+    this.disableDuration = Infinity;
+  }
+
+  update(entity, deltaTime, level) {
+    if (this.enabled)
+      level.entityCollider.check(entity);
+    else if (this.temporarilyDisabled) {
+      this.timeDisabled += deltaTime;
+      if (this.timeDisabled >= this.disableDuration) {
+        this.enabled = true;
+        this.temporarilyDisabled = false;
+      }
+    }
+  }
+
+  disableTemporarily(disableDuration) {
+    this.enabled = false;
+    this.temporarilyDisabled = true;
+    this.timeDisabled = 0;
+    this.disableDuration = disableDuration;
   }
 }
 

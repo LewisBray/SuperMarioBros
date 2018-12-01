@@ -11,7 +11,6 @@ import {createCollisionLayer, createCameraLayer, createHUDLayer} from './layers.
 //  - entry into pipes (no idea yet)
 //  - extra rooms (like pipe leading to underground room with coins)
 //  - death animations
-//  - instant death in certain situations (need entity to fly off screen when instant death [when not mario])
 //  - power-ups
 //  - interactable blocks (question blocks, bricks, etc...)
 //  - flagpole/level completion animation

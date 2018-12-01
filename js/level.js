@@ -27,10 +27,6 @@ export default class Level {
       entity.update(deltaTime, this);
     });
 
-    this.entities.forEach(entity => {
-      this.entityCollider.check(entity);
-    });
-
     this.revivableEntities.forEach(entity => {
       entity.revivable.update(entity, deltaTime, this);
     });

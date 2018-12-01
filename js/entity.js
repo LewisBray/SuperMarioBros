@@ -11,7 +11,6 @@ export default class Entity {
     this.lifetime = 0;
     this.traits = [];
     this.collisionBox = new CollisionBox(this.pos, this.width, this.height);
-    this.entityCollisionEnabled = true;
   }
 
   addTrait(trait) {
@@ -22,13 +21,13 @@ export default class Entity {
   collideWithTile(side, tile) {
     this.traits.forEach(trait => {
       trait.tileCollision(this, side, tile);
-    })
+    });
   }
 
   collideWithEntity(entity) {
     this.traits.forEach(trait => {
       trait.entityCollision(this, entity);
-    })
+    });
   }
 
   update(deltaTime, level) {
