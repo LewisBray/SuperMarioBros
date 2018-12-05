@@ -1,3 +1,4 @@
+import {searchByRange} from './tileresolution.js';
 
 // Traits are mini classes that each handle the logic for an
 // individual trait an entity can have, the Entity class then
@@ -9,7 +10,7 @@ export class Trait {
     this.name = name;
   }
 
-  tileCollision(entity, side, tileCollidedWith) {
+  tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
     // Empty so traits don't have to be implemented if not necessary
   }
 
@@ -48,7 +49,7 @@ export class Jump extends Trait {
     this.requestTime = 0;
   }
 
-  tileCollision(entity, side, tileCollidedWith) {
+  tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
     if (side === 'below') {
       this.ready = true;
       this.isJumping = false;
@@ -118,7 +119,7 @@ export class Move extends Trait {
 }
 
 
-// Need better name for this trait, it's movement that bounces off walls regardless of wallking
+// Need better name for this trait, it's movement that bounces off walls regardless of walking
 export class AIWalk extends Trait {
   constructor(speed) {
     super('aiWalk');
@@ -127,7 +128,7 @@ export class AIWalk extends Trait {
     this.preDisableSpeed = speed;
   }
 
-  tileCollision(entity, side, tileCollidedWith) {
+  tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
     if (side === 'left' || side === 'right')
       this.speed *= -1;
   }
@@ -169,8 +170,6 @@ export class Stomper extends Trait {
 }
 
 
-// Class needs to be extended to handle instant deaths (e.g.
-// from sliding koopa shells), could modify timeAfterDeathToRemove ?
 export class Killable extends Trait {
   constructor() {
     super('killable');
@@ -208,8 +207,10 @@ export class Revivable extends Trait {
   }
 
   update(entity, deltaTime, level) {
-    if (level.revivableEntities.includes(entity))
-      this.timeOutOfGame += deltaTime;
+    if (!level.revivableEntities.includes(entity))
+      return;
+
+    this.timeOutOfGame += deltaTime;
     
     if (this.timeOutOfGame > this.timeTilRevival) {
       this.timeOutOfGame = 0;
@@ -219,6 +220,10 @@ export class Revivable extends Trait {
 }
 
 
+// CollidesWithTiles and CollidesWithEntities are a little awkward, the code feels a bit too much
+// like spaghetti but in some sense it's nice as it keeps things consistent.  Thinking of removing
+// these traits and just doing it with interface functions in the main update loop, the issue is
+// that the loop may get too complicated, need to think about this...
 export class CollidesWithTiles extends Trait {
   constructor() {
     super('collidesWithTiles');
@@ -226,15 +231,15 @@ export class CollidesWithTiles extends Trait {
     this.enabled = true;
   }
 
-  update(entity, deltaTime, level) {          // really awkward position gets updated here, not sure what to do...
-    entity.pos.x += entity.vel.x * deltaTime;
-    level.tileCollider.checkX(entity);
+  update(entity, deltaTime, level) {          // really awkward that position gets updated here,...
+    entity.pos.x += entity.vel.x * deltaTime; // ...not sure what to do about this
+    this.checkX(entity, level.tiles);
 
     entity.pos.y += entity.vel.y * deltaTime;
-    level.tileCollider.checkY(entity);
+    this.checkY(entity, level.tiles);
   }
 
-  tileCollision(entity, side, tileCollidedWith) {
+  tileCollision(entity, side, tileCollidedWith, candidateColllisionTiles) {
     if (!this.enabled)
       return;
     
@@ -246,15 +251,70 @@ export class CollidesWithTiles extends Trait {
       entity.vel.x = 0;
       entity.collisionBox.right = tileCollidedWith.left;
     }
-    else if (side === 'left') {
-      entity.vel.x = 0;
-      entity.collisionBox.left = tileCollidedWith.right;
-    }
     else if (side === 'above') {
       entity.vel.y = 0;
       entity.collisionBox.top = tileCollidedWith.bottom;
     }
+    else if (side === 'left') {
+      entity.vel.x = 0;
+      entity.collisionBox.left = tileCollidedWith.right;
+    }
   }
+
+  checkX(entity, tiles) {
+    if (entity.vel.x === 0)
+      return;
+  
+    const sideEntityIsMoving = (entity.vel.x > 0) ?
+      entity.collisionBox.right : entity.collisionBox.left;
+    const candidateTiles = searchByRange(tiles,
+      sideEntityIsMoving, sideEntityIsMoving,
+      entity.collisionBox.top, entity.collisionBox.bottom);
+  
+    candidateTiles.forEach(candidateTile => {
+      if (candidateTile.tile.type !== 'solid')
+        return;
+  
+      if (entity.vel.x > 0) {
+        if (entity.collisionBox.right > candidateTile.left) {
+          entity.collideWithTile('right', candidateTile, candidateTiles);
+        }
+      }
+      else if (entity.vel.x < 0) {
+        if (entity.collisionBox.left < candidateTile.right) {
+          entity.collideWithTile('left', candidateTile, candidateTiles);
+        }
+      }
+    });
+  }
+  
+  checkY(entity, tiles) {
+    if (entity.vel.y === 0)
+      return;
+  
+    const sideEntityIsMoving = (entity.vel.y > 0) ?
+      entity.collisionBox.bottom : entity.collisionBox.top;
+    const candidateTiles = searchByRange(tiles,
+      entity.collisionBox.left, entity.collisionBox.right,
+      sideEntityIsMoving, sideEntityIsMoving);
+  
+    candidateTiles.forEach(candidateTile => {
+      if (candidateTile.tile.type !== 'solid')
+        return;
+  
+      if (entity.vel.y > 0) {
+        if (entity.collisionBox.bottom > candidateTile.top) {
+          entity.collideWithTile('below', candidateTile, candidateTiles);
+        }
+      }
+      else if (entity.vel.y < 0) {
+        if (entity.collisionBox.top < candidateTile.bottom) {
+          entity.collideWithTile('above', candidateTile, candidateTiles);
+        }
+      }
+    });
+  }
+  
 }
 
 
@@ -270,7 +330,7 @@ export class CollidesWithEntities extends Trait {
 
   update(entity, deltaTime, level) {
     if (this.enabled)
-      level.entityCollider.check(entity);
+      this.check(entity, level.entities);
     else if (this.temporarilyDisabled) {
       this.timeDisabled += deltaTime;
       if (this.timeDisabled >= this.disableDuration) {
@@ -278,6 +338,21 @@ export class CollidesWithEntities extends Trait {
         this.temporarilyDisabled = false;
       }
     }
+  }
+
+  check(subject, entities) {
+    entities.forEach(candidate => {
+      if (subject === candidate)
+        return;
+      
+      if (!candidate.collidesWithEntities.enabled)    // don't need to check subject as check won't get...
+        return;                                       // ...called from trait if entity collision disabled
+
+      if (subject.collisionBox.overlaps(candidate.collisionBox)) {
+        subject.collideWithEntity(candidate);
+        candidate.collideWithEntity(subject);
+      }
+    });
   }
 
   disableTemporarily(disableDuration) {
@@ -325,5 +400,65 @@ export class StuckInLevel extends Trait {
       entity.collisionBox.right = 16 * level.length;
       entity.vel.x = 0;
     }
+  }
+}
+
+
+export class BumpsBlocks extends Trait {
+  constructor() {
+    super('bumpsBlocks');
+
+    this.tilesToUpdate = [];
+  }
+
+  update(entity, deltaTime, level) {
+    if (this.tilesToUpdate.length === 0)
+      return;
+
+    this.tilesToUpdate.forEach(tile => {
+      level.tiles.set(tile.left / 16, tile.top / 16, {name: tile.tile.name, type: tile.tile.type});
+    });
+
+    this.tilesToUpdate.length = 0;
+  }
+
+  tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
+    if (side !== 'above')
+      return;
+    
+    const tilesAboveEntity =
+      this.tilesAboveEntity(tileCollidedWith, entity, candidateCollisionTiles);
+
+    //console.log(tilesAboveEntity);
+
+    tilesAboveEntity.forEach(tile => {
+      if (tile.tile.name !== 'bumpedBlock') {
+        if (tile.tile.name === 'question') {
+          tile.tile.name = 'bumpedBlock';
+          this.tilesToUpdate.push(tile);
+        }
+      }
+    });
+  }
+
+  tilesAboveEntity(tileCollidedWith, entity, candidateCollisionTiles) {
+    const tilesAbove = [];
+    candidateCollisionTiles.forEach(tile => {
+      if (tile.top === tileCollidedWith.top
+        && this.horizontalOverlapPercentage(entity.collisionBox, tile) >= 25)
+        tilesAbove.push(tile);
+    });
+
+    if (tilesAbove.length === 0)
+      tilesAbove.push(tileCollidedWith);
+
+    return tilesAbove;
+  }
+
+  horizontalOverlapPercentage(box, otherBox) {
+    const overlapLeft = (box.left < otherBox.left) ? otherBox.left : box.left;
+    const overlapRight = (box.right > otherBox.right) ? otherBox.right : box.right;
+
+    return (overlapRight - overlapLeft) * 100 / 16;
   }
 }

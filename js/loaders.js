@@ -1,13 +1,12 @@
 import Font from './font.js';
-import Level from './level.js';
 import SpriteSet from './spriteset.js';
-import {Matrix} from './maths.js';
 import {loadMario} from './mario.js';
 import {loadGoomba} from './goomba.js';
 import {loadKoopa} from './koopa.js';
 import {loadCoin} from './coin.js';
 import {animFrameSelectorFactory} from './animation.js';
-import {createBackgroundColourLayer, createBackgroundLayer, createSpriteLayer} from './layers.js';
+import {createBackgroundColourLayer, createBackgroundLayer,
+  createSpriteLayer, createCameraLayer, createHUDLayer} from './layers.js';
 
 
 export function loadImage(url) {
@@ -18,6 +17,11 @@ export function loadImage(url) {
     });
     image.src = url;
   });
+}
+
+
+export function loadJSON(url) {
+  return fetch(url).then(file => file.json());
 }
 
 
@@ -44,117 +48,6 @@ export function loadFont() {
 
     return new Font(fontSet, size);
   });
-}
-
-
-export function createLevelLoader(entityFactory) {
-  return levelName => {
-    return loadJSON(`/js/levels/${levelName}.json`)
-    .then(levelSpec => Promise.all([
-      levelSpec,
-      loadSpriteSet(`/js/tilesets/${levelSpec.tileSet}.json`)
-    ]))
-    .then(([levelSpec, tileSet]) => {
-      const level = new Level();
-      level.name = levelName;
-      level.length = levelSpec.length;
-
-      setupCollisionDetection(levelSpec, level);
-      setupBackgrounds(levelSpec, level, tileSet);
-      setupEntities(levelSpec, level, entityFactory);
-
-      return level;
-    });
-  };
-}
-
-
-function setupCollisionDetection(levelSpec, level) {
-  const mergedLayerTiles = levelSpec.layers.reduce((tiles, layer) => {
-    return tiles.concat(layer.tiles);
-  }, []);
-  const collisionGrid = createCollisionGrid(mergedLayerTiles, levelSpec.patterns);
-  level.setCollisionGrid(collisionGrid);
-}
-
-
-function setupBackgrounds(levelSpec, level, tileSet) {
-  level.compositor.layers.push(createBackgroundColourLayer(levelSpec.backgroundColour));
-
-  levelSpec.layers.forEach(layer => {
-    const backgroundGrid = createBackgroundGrid(layer.tiles, levelSpec.patterns);
-    level.compositor.layers.push(createBackgroundLayer(level, backgroundGrid, tileSet));
-  });
-}
-
-
-function setupEntities(levelSpec, level, entityFactory) {
-  levelSpec.entities.forEach(entity => {
-    const createEntity = entityFactory[entity.name];
-    entity.positions.forEach(([x, y]) => {
-      
-      const newEntity = createEntity();
-      newEntity.pos.x = x;
-      newEntity.pos.y = y;
-      
-      level.entities.push(newEntity);
-    });
-  });
-
-  level.compositor.layers.push(createSpriteLayer(level.entities));
-}
-
-
-function createCollisionGrid(tiles, patterns) {
-  const grid = new Matrix();
-
-  for (const {x, y, tile} of generateTiles(tiles, patterns))
-    grid.set(x, y, {type: tile.type});
-
-  return grid;
-}
-
-
-function createBackgroundGrid(tiles, patterns) {
-  const grid = new Matrix();
-
-  for (const {x, y, tile} of generateTiles(tiles, patterns))
-    grid.set(x, y, {name: tile.name});
-
-  return grid;
-}
-
-
-function* generateTiles(tiles, patterns) {
-  function* walkThroughTiles(tiles, xOffset, yOffset) {
-    for (const tile of tiles) {
-      if (tile.pattern) {
-        const patternTiles = patterns[tile.pattern].tiles;
-        for (const [x, y] of tile.positions)
-          yield* walkThroughTiles(patternTiles, x, y);
-      }
-      else {
-        for (const range of tile.ranges)
-          for (const {x, y} of generateCoords(range))
-            yield {x: x + xOffset, y: y + yOffset, tile};
-      }
-    }
-  }
-
-  yield* walkThroughTiles(tiles, 0, 0);
-}
-
-
-function* generateCoords(range) {
-  const [xStart, xEnd, yStart, yEnd] = range;
-  for (let x = xStart; x < xEnd; ++x)
-    for (let y = yStart; y < yEnd; ++y)
-      yield {x, y};
-}
-
-
-function loadJSON(url) {
-  return fetch(url).then(file => file.json());
 }
 
 
@@ -206,5 +99,23 @@ export function loadEntities() {
   ])
   .then(() => {
     return entityFactory;
+  });
+}
+
+
+export function loadLayersToDraw(level, levelSpec, camera) {
+  return Promise.all(([
+    loadSpriteSet(`/js/tilesets/${levelSpec.tileSet}.json`),
+    loadFont()
+  ]))
+  .then(([levelTileSet, fontSet]) => {
+    const layers = [];
+    layers.push(createBackgroundColourLayer(levelSpec.backgroundColour));
+    layers.push(createBackgroundLayer(level, levelTileSet));
+    layers.push(createSpriteLayer(level.entities));
+    layers.push(createCameraLayer(camera));
+    layers.push(createHUDLayer(fontSet, level));
+  
+    return layers;
   });
 }

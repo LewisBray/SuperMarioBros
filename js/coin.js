@@ -38,7 +38,7 @@ function createCoinFactory(animSpriteSet) {
 
   function drawCoin(context, camera) {
     animSpriteSet.draw(animFrameSelector(this.lifetime), context,
-      this.pos.x - camera.pos.x, this.pos.y - camera.pos.y);
+      this.pos.x - camera.xPos, this.pos.y);
   }
 
   return () => {

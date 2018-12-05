@@ -21,8 +21,8 @@ class Behaviour extends Trait {
     this.state = Walking;
     this.timeInShell = 0;
     this.inShellDuration = 5;
-    this.walkSpeed = 30;                  // This really comes from AIWalk initialisation, make property of Koopa?
-    this.shellPushSpeed = 150;
+    this.walkSpeed = 30;        // This really comes from AIWalk initialisation, make property of Koopa?
+    this.slidingSpeed = 150;
   }
 
   entityCollision(us, them) {
@@ -110,10 +110,10 @@ class Behaviour extends Trait {
 
   startSliding(us, them) {
     us.aiWalk.enable();
-    us.aiWalk.speed = this.shellPushDirection(us, them) * this.shellPushSpeed;
+    us.aiWalk.speed = this.shellPushDirection(us, them) * this.slidingSpeed;
 
     this.state = Sliding;
-    us.collidesWithEntities.disableTemporarily(0.1);
+    them.collidesWithEntities.disableTemporarily(0.2);
   }
 
   stopSliding(us) {
@@ -155,7 +155,7 @@ function createKoopaFactory(animSpriteSet) {
 
   function drawKoopa(context, camera) {
     animSpriteSet.draw(selectAnimFrame(this), context,
-      this.pos.x - camera.pos.x, this.pos.y - camera.pos.y, this.vel.x < 0);
+      this.pos.x - camera.xPos, this.pos.y, this.vel.x < 0);
   }
 
   return () => {

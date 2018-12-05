@@ -18,9 +18,9 @@ export default class Entity {
     this[trait.name] = trait;
   }
 
-  collideWithTile(side, tile) {
+  collideWithTile(side, tileCollidedWith, candidateCollisionTiles) {
     this.traits.forEach(trait => {
-      trait.tileCollision(this, side, tile);
+      trait.tileCollision(this, side, tileCollidedWith, candidateCollisionTiles);
     });
   }
 

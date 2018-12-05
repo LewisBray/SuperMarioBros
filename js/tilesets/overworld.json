@@ -17,6 +17,10 @@
       "location": [1, 0]
     },
     {
+      "name": "bumpedBlock",
+      "location": [3, 0]
+    },
+    {
       "name": "block",
       "location": [0, 1]
     },

@@ -5,10 +5,10 @@ export function setupMouseControls(canvas, camera, entity) {
     canvas.addEventListener(eventName, event => {
       if (event.buttons === 1) {
         entity.vel.set(0, 0);
-        entity.pos.set(event.offsetX + camera.pos.x, event.offsetY + camera.pos.y);
+        entity.pos.set(event.offsetX + camera.xPos, event.offsetY);
       }
       else if (event.buttons === 2 && lastEvent && lastEvent.buttons === 2 && lastEvent.type === 'mousemove')
-        camera.pos.x -= event.offsetX - lastEvent.offsetX;
+        camera.xPos -= event.offsetX - lastEvent.offsetX;
 
       lastEvent = event;
     });
