@@ -193,7 +193,7 @@ export class Killable extends Trait {
         level.removeEntity(entity);
     }
     else if (entity.pos.y > 15 * 16)
-      this.kill();
+      this.kill(0);
   }
 }
 
