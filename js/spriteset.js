@@ -54,6 +54,6 @@ export default class SpriteSet {
 
   drawAnimation(name, context, x, y, distance) {
     const animFrameSelector = this.animations.get(name);
-    this.drawTile(animFrameSelector(distance), context, x, y);
+    this.draw(animFrameSelector(distance), context, x, y);
   }
 };

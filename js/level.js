@@ -1,4 +1,5 @@
 import {Matrix} from './maths.js';
+import {TileSize} from './tileresolution.js';
 
 
 // Handles all aspects of a level (background, entities, etc...)
@@ -9,6 +10,7 @@ export default class Level {
     this.gravity = 1500;
     this.totalTime = 0;
     this.tiles = null;
+    this.tilesToBump = [];
     this.entities = [];
     this.revivableEntities = [];
   }
@@ -22,7 +24,36 @@ export default class Level {
       entity.revivable.update(entity, deltaTime, this);
     });
 
+    this.tilesToBump.forEach(tileInfo => this.bumpTile(tileInfo));
+
     this.totalTime += deltaTime;
+  }
+
+  bumpTile(tileInfo) {
+    const levelTile = this.tiles.get(tileInfo.xIndex, tileInfo.yIndex);
+
+    // should this animation be defined in JSON, not sure it needs to be if it's a one off
+    tileInfo.frame++;
+    switch (tileInfo.frame) {   // animation sequence needs tweaking but fine for now
+      case 1:
+      case 2:
+        levelTile.yPos -= 2;
+        break;
+      case 3:
+        levelTile.yPos += 2;
+        break;
+      case 4:
+        levelTile.yPos += 2;
+        if (levelTile.name === 'question')
+        levelTile.name = 'bumpedBlock';
+        this.removeTileToNudge(tileInfo);
+        break;
+    }
+  }
+
+  removeTileToNudge(tileInfo) {
+    const tileToNudgeIndex = this.tilesToBump.indexOf(tileInfo);
+    this.tilesToBump.splice(tileToNudgeIndex, 1);
   }
 
   removeEntity(entity) {
@@ -68,7 +99,7 @@ export function createLevel(levelName, levelSpec, entityFactory) {
 function createTileGrid(tiles, patterns) {
   const grid = new Matrix();
   for (const {x, y, tile} of generateTiles(tiles, patterns))
-    grid.set(x, y, {name: tile.name, type: tile.type});
+    grid.set(x, y, {name: tile.name, type: tile.type, xPos: x * TileSize, yPos: y * TileSize});
 
   return grid;
 }

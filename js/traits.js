@@ -1,4 +1,4 @@
-import {searchByRange} from './tileresolution.js';
+import {toIndex, searchByRange} from './tileresolution.js';
 
 // Traits are mini classes that each handle the logic for an
 // individual trait an entity can have, the Entity class then
@@ -408,18 +408,15 @@ export class BumpsBlocks extends Trait {
   constructor() {
     super('bumpsBlocks');
 
-    this.tilesToUpdate = [];
+    this.tilesToBump = [];
   }
 
   update(entity, deltaTime, level) {
-    if (this.tilesToUpdate.length === 0)
+    if (this.tilesToBump.length === 0)
       return;
 
-    this.tilesToUpdate.forEach(tile => {
-      level.tiles.set(tile.left / 16, tile.top / 16, {name: tile.tile.name, type: tile.tile.type});
-    });
-
-    this.tilesToUpdate.length = 0;
+    level.tilesToBump.push(...this.tilesToBump);
+    this.tilesToBump.length = 0;
   }
 
   tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
@@ -427,21 +424,20 @@ export class BumpsBlocks extends Trait {
       return;
     
     const tilesAboveEntity =
-      this.tilesAboveEntity(tileCollidedWith, entity, candidateCollisionTiles);
-
-    //console.log(tilesAboveEntity);
+      this.tilesAboveEntity(entity, tileCollidedWith, candidateCollisionTiles);
 
     tilesAboveEntity.forEach(tile => {
       if (tile.tile.name !== 'bumpedBlock') {
-        if (tile.tile.name === 'question') {
-          tile.tile.name = 'bumpedBlock';
-          this.tilesToUpdate.push(tile);
-        }
+        this.tilesToBump.push({
+          xIndex: toIndex(tile.left),
+          yIndex: toIndex(tile.top),
+          frame: 0
+        });
       }
     });
   }
 
-  tilesAboveEntity(tileCollidedWith, entity, candidateCollisionTiles) {
+  tilesAboveEntity(entity, tileCollidedWith, candidateCollisionTiles) {
     const tilesAbove = [];
     candidateCollisionTiles.forEach(tile => {
       if (tile.top === tileCollidedWith.top
@@ -456,9 +452,9 @@ export class BumpsBlocks extends Trait {
   }
 
   horizontalOverlapPercentage(box, otherBox) {
-    const overlapLeft = (box.left < otherBox.left) ? otherBox.left : box.left;
-    const overlapRight = (box.right > otherBox.right) ? otherBox.right : box.right;
+    const innerLeftEdge = (box.left < otherBox.left) ? otherBox.left : box.left;
+    const innerRightEdge = (box.right > otherBox.right) ? otherBox.right : box.right;
 
-    return (overlapRight - overlapLeft) * 100 / 16;
+    return (innerRightEdge - innerLeftEdge) * 100 / 16;
   }
 }

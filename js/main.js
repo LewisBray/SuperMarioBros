@@ -11,7 +11,6 @@ import {loadJSON, loadEntities, loadLayersToDraw} from './loaders.js';
 //  - extra rooms (like pipe leading to underground room with coins)
 //  - death animations (do enemies flip upside down when killed by sliding koopa shell?)
 //  - power-ups
-//  - interactable blocks (question blocks, bricks, etc...)
 //  - flagpole/level completion animation
 //  - score counting
 //  - music

@@ -1,4 +1,4 @@
-import {toIndex} from './tileresolution.js';
+import {TileSize, toIndex} from './tileresolution.js';
 
 // Layers are not what they sound like, in this project layers are functions
 // which draw the actual tile/sprite graphical layers to a context.
@@ -63,10 +63,12 @@ export function createBackgroundLayer(level, tileSet) {
       const column = level.tiles.grid[x];
       if (column) {
         column.forEach((tile, y) => {
-          if (tileSet.animations.has(tile.name))
-            tileSet.drawAnimation(tile.name, backgroundContext, x - startIndex, y, level.totalTime);
+          if (tileSet.animations.has(tile.name)) {
+            tileSet.drawAnimation(tile.name, backgroundContext,
+              tile.xPos - startIndex * TileSize, tile.yPos, level.totalTime);
+          }
           else
-           tileSet.drawTile(tile.name, backgroundContext, x - startIndex, y);
+           tileSet.draw(tile.name, backgroundContext, tile.xPos - startIndex * TileSize, tile.yPos);
         });
       }
     }
