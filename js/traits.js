@@ -388,7 +388,7 @@ export class Collector extends Trait {
 
 export class StuckInLevel extends Trait {
   constructor() {
-    super('behaviour');
+    super('stuckInLevel');
   }
 
   update(entity, deltaTime, level) {
