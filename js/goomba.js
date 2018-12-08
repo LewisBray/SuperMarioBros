@@ -1,11 +1,17 @@
 import Entity from './entity.js';
-import {loadSpriteSet} from './loaders.js';
+import {loadJSON, loadSpriteSet} from './loaders.js';
 import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, AIWalk, Killable} from './traits.js';
 
 
 export function loadGoomba() {
-  return loadSpriteSet('/js/animations/goomba.json')
-  .then(createGoombaFactory);
+  return loadJSON('/js/animations/goomba.json')
+  .then(entitySpec => Promise.all([
+    loadSpriteSet(entitySpec),
+    entitySpec
+  ]))
+  .then(([animSpriteSet, entitySpec]) => {
+    return createGoombaFactory(animSpriteSet, entitySpec)
+  });
 }
 
 
@@ -32,7 +38,7 @@ class Behaviour extends Trait {
 }
 
 
-function createGoombaFactory(animSpriteSet) {
+function createGoombaFactory(animSpriteSet, entitySpec) {
   const walkAnimFrameSelector = animSpriteSet.animations.get('walk');
 
   function selectAnimFrame(goomba) {

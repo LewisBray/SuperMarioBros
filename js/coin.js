@@ -1,11 +1,17 @@
 import Entity from './entity.js';
-import {loadSpriteSet} from './loaders.js';
+import {loadJSON, loadSpriteSet} from './loaders.js';
 import {Trait, CollidesWithEntities} from './traits.js';
 
 
 export function loadCoin() {
-  return loadSpriteSet('/js/animations/coin.json')
-  .then(createCoinFactory);
+  return loadJSON('/js/animations/coin.json')
+  .then(entitySpec => Promise.all([
+    loadSpriteSet(entitySpec),
+    entitySpec
+  ]))
+  .then(([animSpriteSet, entitySpec]) => {
+    return createCoinFactory(animSpriteSet, entitySpec);
+  });
 }
 
 
@@ -23,6 +29,7 @@ class Behaviour extends Trait {
     if (them.collector) {
       them.collector.coinsCollected++;
       this.collected = true;
+      them.playAudio('collectCoin');
     }
   }
 
@@ -33,7 +40,7 @@ class Behaviour extends Trait {
 }
 
 
-function createCoinFactory(animSpriteSet) {
+function createCoinFactory(animSpriteSet, entitySpec) {
   const animFrameSelector = animSpriteSet.animations.get('coin');
 
   function drawCoin(context, camera) {

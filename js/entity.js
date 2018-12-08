@@ -10,6 +10,7 @@ export default class Entity {
     this.height = height;
     this.lifetime = 0;
     this.traits = [];
+    this.audio = new Map();
     this.collisionBox = new CollisionBox(this.pos, this.width, this.height);
   }
 
@@ -36,5 +37,13 @@ export default class Entity {
     });
 
     this.lifetime += deltaTime;
+  }
+
+  playAudio(name) {
+    const audio = this.audio.get(name);
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play();
+    }
   }
 }

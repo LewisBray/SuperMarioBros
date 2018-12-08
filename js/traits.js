@@ -63,6 +63,7 @@ export class Jump extends Trait {
       if (this.ready) {
         this.engageTime = this.duration;
         this.isJumping = true;
+        entity.playAudio('jump');
       }
 
       this.requestTime -= deltaTime;
@@ -159,6 +160,7 @@ export class Stomper extends Trait {
   bounce(us, them) {
     us.collisionBox.bottom = them.collisionBox.top;
     this.shouldBounce = true;
+    us.playAudio('stomp');
   }
 
   update(entity, deltaTime, level) {
@@ -427,6 +429,15 @@ export class BumpsBlocks extends Trait {
       this.tilesAboveEntity(entity, tileCollidedWith, candidateCollisionTiles);
 
     tilesAboveEntity.forEach(tile => {
+      if (tile.tile.name === 'bumpedBlock' || tile.tile.name === 'brickTop') {
+        entity.playAudio('bump');
+      }
+      else if (tile.tile.name === 'question') {
+        if (entity.collector)
+          entity.collector.coinsCollected++;
+        entity.playAudio('collectCoin');
+      }
+
       if (tile.tile.name !== 'bumpedBlock') {
         this.tilesToBump.push({
           xIndex: toIndex(tile.left),

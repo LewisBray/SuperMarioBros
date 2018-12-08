@@ -1,5 +1,5 @@
 import Entity from './entity.js';
-import {loadSpriteSet} from './loaders.js';
+import {loadJSON, loadSpriteSet} from './loaders.js';
 import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, AIWalk, Killable} from './traits.js';
 
 
@@ -9,8 +9,14 @@ const Sliding = Symbol('sliding');
 
 
 export function loadKoopa() {
-  return loadSpriteSet('/js/animations/koopa.json', 16, 24)
-  .then(createKoopaFactory);
+  return loadJSON('/js/animations/koopa.json')
+  .then(entitySpec => Promise.all([
+    loadSpriteSet(entitySpec, 16, 24),
+    entitySpec
+  ]))
+  .then(([animSpriteSet, entitySpec]) => {
+    return createKoopaFactory(animSpriteSet, entitySpec);
+  });
 }
 
 
@@ -23,6 +29,14 @@ class Behaviour extends Trait {
     this.inShellDuration = 5;
     this.walkSpeed = 30;        // This really comes from AIWalk initialisation, make property of Koopa?
     this.slidingSpeed = 150;
+  }
+
+  tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
+    if (side !== 'left' && side !== 'right')
+      return;
+    
+    if (this.state === Sliding)
+      entity.playAudio('bump');
   }
 
   entityCollision(us, them) {
@@ -78,8 +92,10 @@ class Behaviour extends Trait {
       if (them.killable)
         them.killable.kill(0);
     }
-    else
+    else {
       this.startSliding(us, them);
+      us.playAudio('shellImpact');
+    }
   }
 
   handleSlidingCollision(us, them) {
@@ -88,18 +104,17 @@ class Behaviour extends Trait {
       this.stopSliding(us)
       them.stomper.bounce(them, us);
     }
-    else {
-      if (them.killable) {
-        if (them.stomper)
-          them.killable.kill(0);     // treat Mario differently
-        else {
-          them.killable.kill(2, true);
-          them.collidesWithEntities.enabled = false;
-          them.vel.y = -150;
-          them.aiWalk.speed = 150 * Math.sign(us.vel.x);
-          if (them.collidesWithTiles)
-            them.collidesWithTiles.enabled = false;
-        }
+    else if (them.killable) {
+      if (them.stomper)
+        them.killable.kill(0);     // treat Mario differently
+      else {
+        them.killable.kill(2, true);
+        them.collidesWithEntities.enabled = false;
+        them.vel.y = -150;
+        them.aiWalk.speed = 150 * Math.sign(us.vel.x);
+        if (them.collidesWithTiles)
+          them.collidesWithTiles.enabled = false;
+        us.playAudio('shellImpact');
       }
     }
   }
@@ -135,7 +150,7 @@ class Behaviour extends Trait {
 }
 
 
-function createKoopaFactory(animSpriteSet) {
+function createKoopaFactory(animSpriteSet, entitySpec) {
   const walkAnimFrameSelector = animSpriteSet.animations.get('walk');
   const wakeAnimFrameSelector = animSpriteSet.animations.get('wake');
 
@@ -161,6 +176,10 @@ function createKoopaFactory(animSpriteSet) {
   return () => {
     const koopa = new Entity(16, 24);
     koopa.collisionBox.yOffset = 8;
+
+    entitySpec.audio.forEach(audio => {
+      koopa.audio.set(audio.name, new Audio(`/js/music/effects/${audio.file}.wav`));
+    });
 
     koopa.addTrait(new AIWalk(30));
     koopa.addTrait(new Killable());

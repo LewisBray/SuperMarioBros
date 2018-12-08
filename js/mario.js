@@ -1,7 +1,7 @@
 import Entity from './entity.js';
-import {loadSpriteSet} from './loaders.js';
 import {Jump, Move, CollidesWithTiles, CollidesWithEntities, HasMass,
   Stomper, Killable, Revivable, Collector, StuckInLevel, BumpsBlocks} from './traits.js';
+import {loadJSON, loadSpriteSet} from './loaders.js';
 
 
 const highDrag = 1/2000;
@@ -11,12 +11,18 @@ const lowDrag = 1/5000;
 // loading a character sprite file which is asyncronous.  Once we have these we
 // can set Mario's initial state and any traits he may have.
 export function loadMario() {
-  return loadSpriteSet('/js/animations/mario.json')
-  .then(createMarioFactory);
+  return loadJSON('/js/animations/mario.json')
+  .then(entitySpec => Promise.all([
+    loadSpriteSet(entitySpec),
+    entitySpec
+  ]))
+  .then(([animSpriteSet, entitySpec]) => {
+    return createMarioFactory(animSpriteSet, entitySpec);
+  });
 }
 
 
-function createMarioFactory(animSpriteSet) {
+function createMarioFactory(animSpriteSet, entitySpec) {
   const runAnimFrameSelector = animSpriteSet.animations.get('run');
 
   function selectAnimFrame(mario) {
@@ -44,6 +50,10 @@ function createMarioFactory(animSpriteSet) {
 
   return () => {
     const mario = new Entity(16, 16);
+
+    entitySpec.audio.forEach(audio => {
+      mario.audio.set(audio.name, new Audio(`/js/music/effects/${audio.file}.wav`));
+    });
 
     mario.addTrait(new Move());
     mario.addTrait(new Jump());

@@ -53,9 +53,8 @@ export function loadFont() {
 
 // This needs to be made more elegant and more thought put into JSON format so it
 // works for both character sprites and level tiles.
-export function loadSpriteSet(name, spriteWidth = 16, spriteHeight = 16) {
-  return loadJSON(name)
-  .then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.imageURL)]))
+export function loadSpriteSet(spritesSpec, spriteWidth = 16, spriteHeight = 16) {
+  return Promise.all([spritesSpec, loadImage(spritesSpec.imageURL)])
   .then(([spritesSpec, tileSetImage]) => {
     const tileSet = new SpriteSet(tileSetImage, spriteWidth, spriteHeight);
 
@@ -105,8 +104,12 @@ export function loadEntities() {
 
 export function loadLayersToDraw(level, levelSpec, camera) {
   return Promise.all(([
-    loadSpriteSet(`/js/tilesets/${levelSpec.tileSet}.json`),
+    loadJSON(`/js/tilesets/${levelSpec.tileSet}.json`),
     loadFont()
+  ]))
+  .then(([tilesSpec, fontSet]) => Promise.all([
+    loadSpriteSet(tilesSpec),
+    fontSet
   ]))
   .then(([levelTileSet, fontSet]) => {
     const layers = [];

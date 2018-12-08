@@ -13,6 +13,7 @@ export default class Level {
     this.tilesToBump = [];
     this.entities = [];
     this.revivableEntities = [];
+    this.audio = new Map();
   }
 
   update(deltaTime) {
@@ -25,6 +26,13 @@ export default class Level {
     });
 
     this.tilesToBump.forEach(tileInfo => this.bumpTile(tileInfo));
+
+    // if (this.totalTime < 150)
+    //   this.audio.get('mainTheme').play();
+    // else {
+    //   this.audio.get('mainTheme').pause();
+    //   this.audio.get('panicTheme').play();
+    // }
 
     this.totalTime += deltaTime;
   }
@@ -90,8 +98,12 @@ export function createLevel(levelName, levelSpec, entityFactory) {
   const mergedLayers = levelSpec.layers.reduce((tiles, layer) => tiles.concat(layer.tiles), []);
   level.tiles = createTileGrid(mergedLayers, levelSpec.patterns);
 
-  setupEntities(levelSpec, level, entityFactory);
+  levelSpec.audio.forEach(audio => {
+    level.audio.set(audio.name, new Audio(`/js/music/level/${audio.file}.mp3`));
+  });
 
+  setupEntities(levelSpec, level, entityFactory);
+  
   return level;
 }
 

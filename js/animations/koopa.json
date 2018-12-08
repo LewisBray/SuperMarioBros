@@ -47,5 +47,16 @@
         "shellWithLegs"
       ]
     }
+  ],
+
+  "audio": [
+    {
+      "name": "shellImpact",
+      "file": "kick shell"
+    },
+    {
+      "name": "bump",
+      "file": "bump"
+    }
   ]
 }

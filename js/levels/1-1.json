@@ -680,6 +680,17 @@
     }
   },
 
+  "audio": [
+    {
+      "name": "mainTheme",
+      "file": "overworld"
+    },
+    {
+      "name": "panicTheme",
+      "file": "overworld hurry"
+    }
+  ],
+
   "entities": [
     {
       "name": "goomba",

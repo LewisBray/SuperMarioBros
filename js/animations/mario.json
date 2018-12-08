@@ -52,5 +52,24 @@
         "run-3"
       ]
     }
+  ],
+
+  "audio": [
+    {
+      "name": "jump",
+      "file": "jump (small)"
+    },
+    {
+      "name": "bump",
+      "file": "bump"
+    },
+    {
+      "name": "stomp",
+      "file": "stomp"
+    },
+    {
+      "name": "collectCoin",
+      "file": "coin"
+    }
   ]
 }
