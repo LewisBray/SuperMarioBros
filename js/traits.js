@@ -435,6 +435,8 @@ export class BumpsBlocks extends Trait {
       else if (tile.tile.name === 'question') {
         if (entity.collector)
           entity.collector.coinsCollected++;
+        if (entity.scoresPoints)
+          entity.scoresPoints.pointsScored += 200;
         entity.playAudio('collectCoin');
       }
 
@@ -467,5 +469,14 @@ export class BumpsBlocks extends Trait {
     const innerRightEdge = (box.right > otherBox.right) ? otherBox.right : box.right;
 
     return (innerRightEdge - innerLeftEdge) * 100 / 16;
+  }
+}
+
+
+export class ScoresPoints extends Trait {
+  constructor() {
+    super('scoresPoints');
+
+    this.pointsScored = 0;
   }
 }

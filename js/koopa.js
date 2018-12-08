@@ -76,6 +76,8 @@ class Behaviour extends Trait {
     if (theyJumpedOnUs) {
       this.goIntoShell(us);
       them.stomper.bounce(them, us);
+      if (them.scoresPoints)
+        them.scoresPoints.pointsScored += 100;
     }
     else {
       if (them.killable)
@@ -94,6 +96,8 @@ class Behaviour extends Trait {
     }
     else {
       this.startSliding(us, them);
+      if (them.scoresPoints)
+        them.scoresPoints.pointsScored += 500;
       us.playAudio('shellImpact');
     }
   }

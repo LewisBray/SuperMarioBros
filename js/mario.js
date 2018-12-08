@@ -1,7 +1,7 @@
 import Entity from './entity.js';
-import {Jump, Move, CollidesWithTiles, CollidesWithEntities, HasMass,
-  Stomper, Killable, Revivable, Collector, StuckInLevel, BumpsBlocks} from './traits.js';
 import {loadJSON, loadSpriteSet} from './loaders.js';
+import {Jump, Move, CollidesWithTiles, CollidesWithEntities, HasMass, Stomper,
+  Killable, Revivable, Collector, StuckInLevel, BumpsBlocks, ScoresPoints} from './traits.js';
 
 
 const highDrag = 1/2000;
@@ -61,6 +61,7 @@ function createMarioFactory(animSpriteSet, entitySpec) {
     mario.addTrait(new Killable());
     mario.addTrait(new Revivable());
     mario.addTrait(new Collector());
+    mario.addTrait(new ScoresPoints());
     mario.addTrait(new StuckInLevel());
     mario.addTrait(new CollidesWithTiles());
     mario.addTrait(new HasMass());

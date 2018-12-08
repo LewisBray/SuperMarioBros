@@ -12,7 +12,7 @@ const Line2 = 2 * fontSize;
 export function createHUDLayer(font, level) {
   return (context, camera) => {
     font.print('MARIO', context, 3 * 8, Line1);
-    const score = 0;
+    const score = addUpPointsCollected(level.entities);
     font.print(score.toString().padStart(6, '0'), context, 3 * 8, Line2);
 
     font.print('WORLD', context, 32 * 8, Line1);
@@ -36,6 +36,17 @@ function addUpCoinsCollected(entities) {
   };
 
   return entities.reduce(coinTotaller, 0);
+}
+
+// Also have the option of initialising the level with the total number of points
+// scored by each entity and then adding to a running total in the level class
+// instead of calculating every frame
+function addUpPointsCollected(entities) {
+  const pointTotaller = (runningPointTotal, entity) => {
+    return runningPointTotal + (entity.scoresPoints ? entity.scoresPoints.pointsScored : 0);
+  };
+
+  return entities.reduce(pointTotaller, 0);
 }
 
 
