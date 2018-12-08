@@ -38,22 +38,28 @@ export default class Level {
   }
 
   bumpTile(tileInfo) {
-    const levelTile = this.tiles.get(tileInfo.xIndex, tileInfo.yIndex);
-
-    // should this animation be defined in JSON, not sure it needs to be if it's a one off
     tileInfo.frame++;
-    switch (tileInfo.frame) {   // animation sequence needs tweaking but fine for now
+    if (tileInfo.frame <= 0 || tileInfo.frame > 6) {
+      this.removeTileToNudge(tileInfo);
+      return;
+    }
+
+    const levelTile = this.tiles.get(tileInfo.xIndex, tileInfo.yIndex);
+    // should this animation be defined in JSON, not sure it needs to be if it's a one off
+    switch (tileInfo.frame) {
       case 1:
       case 2:
+      case 3:
         levelTile.yPos -= 2;
         break;
-      case 3:
+      case 4:
+      case 5:
         levelTile.yPos += 2;
         break;
-      case 4:
+      case 6:
         levelTile.yPos += 2;
         if (levelTile.name === 'question')
-        levelTile.name = 'bumpedBlock';
+          levelTile.name = 'bumpedBlock';
         this.removeTileToNudge(tileInfo);
         break;
     }
