@@ -5,28 +5,34 @@ import {TileSize, toIndex} from './tileresolution.js';
 
 // Need to think of a nice way of recreating the collision box layer.
 
-const fontSize = 8;
-const Line1 = fontSize;
-const Line2 = 2 * fontSize;
+const FontSize = 8;
+const Line1 = FontSize;
+const Line2 = 2 * FontSize;
 
-export function createHUDLayer(font, level, itemsTileSet) {
+export function createHUDLayer(hudTileSet, level) {
   return (context, camera) => {
-    font.print('MARIO', context, 3 * 8, Line1);
+    printText('MARIO', context, 3 * FontSize, Line1, hudTileSet);
     const score = addUpPointsCollected(level.entities);
-    font.print(score.toString().padStart(6, '0'), context, 3 * 8, Line2);
+    printText(score.toString().padStart(6, '0'), context, 3 * FontSize, Line2, hudTileSet);
 
-    font.print('WORLD', context, 32 * 8, Line1);
-    font.print(level.name, context, 33 * 8, Line2);
+    printText('WORLD', context, 32 * FontSize, Line1, hudTileSet);
+    printText(level.name, context, 33 * FontSize, Line2, hudTileSet);
 
     const numCoins = addUpCoinsCollected(level.entities);
-    itemsTileSet.drawAnimation('smallCoin', context, 18 * 8, Line2, level.totalTime);
-    itemsTileSet.draw('times', context, 19 * 8, Line2);
-    font.print(numCoins.toString().padStart(2, '0'), context, 20 * 8, Line2);
+    hudTileSet.drawAnimation('smallCoin', context, 18 * FontSize, Line2, level.totalTime);
+    hudTileSet.draw('times', context, 19 * FontSize, Line2);
+    printText(numCoins.toString().padStart(2, '0'), context, 20 * FontSize, Line2, hudTileSet);
 
-    font.print('TIME', context, 45 * 8, Line1);
+    printText('TIME', context, 45 * FontSize, Line1, hudTileSet);
     const time = 400 - Math.floor(2 * level.totalTime);     // need to know rate time flows in Super Mario Bros.
-    font.print(time.toString().padStart(3, '0'), context, 46 * 8, Line2);
+    printText(time.toString().padStart(3, '0'), context, 46 * FontSize, Line2, hudTileSet);
   };
+}
+
+function printText(text, context, xPos, yPos, spriteSet) {
+  [...text].forEach((character, index) => {
+    spriteSet.draw(character, context, xPos + index * FontSize, yPos);
+  });
 }
 
 // At the moment we just add up the total coins from all coin collectors but may
@@ -67,9 +73,6 @@ export function createBackgroundLayer(level, tileSet) {
 
   const backgroundContext = backgroundBuffer.getContext('2d');
 
-  // Not sure if I even want this function, the background buffers for the entire
-  // level don't strike me as being a ridiculous size and it results in less code
-  // and maybe even better performance once the background is all loaded into memory
   function drawBackgroundSubrange(startIndex, endIndex) {
     backgroundContext.clearRect(0, 0, backgroundBuffer.width, backgroundBuffer.height);
     for (let x = startIndex; x <= endIndex; ++x) {

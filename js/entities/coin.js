@@ -1,10 +1,10 @@
 import Entity from './entity.js';
-import {loadJSON, loadSpriteSet} from './loaders.js';
-import {Trait, CollidesWithEntities} from './traits.js';
+import {loadJSON, loadSpriteSet} from '../loaders.js';
+import {Trait, CollidesWithEntities} from '../traits.js';
 
 
 export function loadCoin() {
-  return loadJSON('/js/animations/coin.json')
+  return loadJSON('/js/specifications/entities/coin.json')
   .then(entitySpec => Promise.all([
     loadSpriteSet(entitySpec),
     entitySpec

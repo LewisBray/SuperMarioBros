@@ -1,10 +1,10 @@
 import Entity from './entity.js';
-import {loadJSON, loadSpriteSet} from './loaders.js';
-import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, AIWalk, Killable} from './traits.js';
+import {loadJSON, loadSpriteSet} from '../loaders.js';
+import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, AIWalk, Killable} from '../traits.js';
 
 
 export function loadGoomba() {
-  return loadJSON('/js/animations/goomba.json')
+  return loadJSON('/js/specifications/entities/goomba.json')
   .then(entitySpec => Promise.all([
     loadSpriteSet(entitySpec),
     entitySpec

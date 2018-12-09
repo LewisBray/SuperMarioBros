@@ -1,10 +1,8 @@
-import Font from './font.js';
 import SpriteSet from './spriteset.js';
-import {loadMario} from './mario.js';
-import {loadGoomba} from './goomba.js';
-import {loadKoopa} from './koopa.js';
-import {loadCoin} from './coin.js';
-import {animFrameSelectorFactory} from './animation.js';
+import {loadMario} from './entities/mario.js';
+import {loadGoomba} from './entities/goomba.js';
+import {loadKoopa} from './entities/koopa.js';
+import {loadCoin} from './entities/coin.js';
 import {createBackgroundColourLayer, createBackgroundLayer,
   createSpriteLayer, createCameraLayer, createHUDLayer} from './layers.js';
 
@@ -25,45 +23,21 @@ export function loadJSON(url) {
 }
 
 
-const loadableCharacters =
-  ' !"#$%&\'()*+,-./' +
-  '0123456789:;<=>?' +
-  '@ABCDEFGHIJKLMNO' +
-  'PQRSTUVWXYZ[\\]^_' +
-  '`abcdefghijklmno' +
-  'pqrstuvwxyz{¦}~|';
-
-export function loadFont() {
-  return loadImage('./js/images/fontset.png')
-  .then(fontSetImage => {
-    const fontSet = new SpriteSet(fontSetImage);
-
-    const size = 8;
-    const imageWidth = fontSetImage.width;
-    for (let [index, character] of [...loadableCharacters].entries()) {
-      const xPos = index * size % imageWidth;
-      const yPos = Math.floor(index * size / imageWidth) * size;
-      fontSet.define(character, xPos, yPos, size, size);
-    }
-
-    return new Font(fontSet, size);
-  });
-}
-
-
-// This needs to be made more elegant and more thought put into JSON format so it
-// works for both character sprites and level tiles.
-export function loadSpriteSet(spritesSpec, spriteWidth = 16, spriteHeight = 16) {
+export function loadSpriteSet(spritesSpec) {
   return Promise.all([spritesSpec, loadImage(spritesSpec.imageURL)])
   .then(([spritesSpec, tileSetImage]) => {
-    const tileSet = new SpriteSet(tileSetImage, spriteWidth, spriteHeight);
+    const tileSet = new SpriteSet(tileSetImage);
+
+    const xScale = spritesSpec.xScale;
+    const yScale = spritesSpec.yScale;
 
     if (spritesSpec.tiles) {
       spritesSpec.tiles.forEach(tile => {
         tileSet.define(tile.name,
-          tile.location[0] * spritesSpec.xScale,
-          tile.location[1] * spritesSpec.yScale,
-          spriteWidth, spriteHeight);             // needs to be specified in JSON?
+          tile.location[0] * xScale,
+          tile.location[1] * yScale,
+          (tile.width) ? tile.width : xScale,
+          (tile.height) ? tile.height : yScale);
       });
     }
 
@@ -78,6 +52,13 @@ export function loadSpriteSet(spritesSpec, spriteWidth = 16, spriteHeight = 16) 
 
     return tileSet;
   });
+}
+
+function animFrameSelectorFactory(frames, frameLength) {
+  return distance => {
+    const frameIndex = Math.floor(distance / frameLength) % frames.length;
+    return frames[frameIndex];
+  };
 }
 
 
@@ -104,21 +85,19 @@ export function loadEntities() {
 
 export function loadLayersToDraw(level, levelSpec, camera) {
   return Promise.all(([
-    loadJSON(`/js/tilesets/${levelSpec.tileSet}.json`),
-    loadJSON(`/js/itemsets/${levelSpec.tileSet}.json`),
-    loadFont()
+    loadJSON(`/js/specifications/tilesets/${levelSpec.tileSet}.json`),
+    loadJSON(`/js/specifications/hud.json`)
   ]))
-  .then(([tilesSpec, itemsSpec, fontSet]) => Promise.all([
+  .then(([tilesSpec, hudSpec, fontSet]) => Promise.all([
     loadSpriteSet(tilesSpec),
-    loadSpriteSet(itemsSpec, 8, 8),
-    fontSet
+    loadSpriteSet(hudSpec, 8, 8),
   ]))
-  .then(([levelTileSet, itemsTileSet, fontSet]) => {
+  .then(([levelTileSet, hudTileSet]) => {
     const layers = [];
     layers.push(createBackgroundColourLayer(levelSpec.backgroundColour));
     layers.push(createBackgroundLayer(level, levelTileSet));
     layers.push(createSpriteLayer(level.entities));
-    layers.push(createHUDLayer(fontSet, level, itemsTileSet));
+    layers.push(createHUDLayer(hudTileSet, level));
     layers.push(createCameraLayer(camera));
   
     return layers;

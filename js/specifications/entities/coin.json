@@ -1,26 +1,20 @@
 {
-  "imageURL": "/js/images/tileset.png",
+  "imageURL": "/js/images/entities/coin.png",
   "xScale": 16,
   "yScale": 16,
 
   "tiles": [
     {
       "name": "coin-1",
-      "location": [24, 1],
-      "width": 16,
-      "height": 16
+      "location": [0, 0]
     },
     {
       "name": "coin-2",
-      "location": [25, 1],
-      "width": 16,
-      "height": 16
+      "location": [1, 0]
     },
     {
       "name": "coin-3",
-      "location": [26, 1],
-      "width": 16,
-      "height": 16
+      "location": [2, 0]
     }
   ],
 

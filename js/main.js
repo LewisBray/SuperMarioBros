@@ -18,13 +18,14 @@ import {loadJSON, loadEntities, loadLayersToDraw} from './loaders.js';
 //  - some small pointless files that could contain more/be gotten rid of
 //  - optimise music handling in level update loop
 //  - need a better .png file with everything in it or be able to make my own
+//  - optimise entity collision by only checking nearby entities
 
 async function main(canvas) {
   const context = canvas.getContext('2d');
   const levelName = '1-1';
 
   const [levelSpec, createEntity] = await Promise.all([
-    loadJSON(`/js/levels/${levelName}.json`),
+    loadJSON(`/js/specifications/levels/${levelName}.json`),
     loadEntities()
   ]);
 

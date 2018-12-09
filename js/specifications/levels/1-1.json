@@ -87,7 +87,7 @@
         {
           "pattern": "flagpole",
           "positions": [
-            [198, 2]
+            [197, 2]
           ]
         },
         {
@@ -602,21 +602,28 @@
           "name": "flagpoleTop",
           "type": "scenery",
           "ranges": [
-            [0, 1, 0, 1]
+            [1, 2, 0, 1]
           ]
         },
         {
-          "name": "pole",
+          "name": "flagpole",
           "type": "scenery",
           "ranges": [
-            [0, 1, 1, 10]
+            [1, 2, 1, 10]
+          ]
+        },
+        {
+          "name": "flag",
+          "type": "scenery",
+          "ranges": [
+            [0, 1, 1, 2]
           ]
         },
         {
           "name": "block",
           "type": "solid",
           "ranges": [
-            [0, 1, 10, 11]
+            [1, 2, 10, 11]
           ]
         }
       ]

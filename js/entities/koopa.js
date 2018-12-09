@@ -1,6 +1,6 @@
 import Entity from './entity.js';
-import {loadJSON, loadSpriteSet} from './loaders.js';
-import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, AIWalk, Killable} from './traits.js';
+import {loadJSON, loadSpriteSet} from '../loaders.js';
+import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, AIWalk, Killable} from '../traits.js';
 
 
 const Walking = Symbol('walking');
@@ -9,9 +9,9 @@ const Sliding = Symbol('sliding');
 
 
 export function loadKoopa() {
-  return loadJSON('/js/animations/koopa.json')
+  return loadJSON('/js/specifications/entities/koopa.json')
   .then(entitySpec => Promise.all([
-    loadSpriteSet(entitySpec, 16, 24),
+    loadSpriteSet(entitySpec),
     entitySpec
   ]))
   .then(([animSpriteSet, entitySpec]) => {

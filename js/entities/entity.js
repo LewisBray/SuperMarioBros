@@ -1,5 +1,5 @@
-import CollisionBox from './collisionbox.js';
-import {Vec} from './maths.js';
+import CollisionBox from '../collisionbox.js';
+import {Vec} from '../maths.js';
 
 // Base class for all characters/enemies/etc...
 export default class Entity {

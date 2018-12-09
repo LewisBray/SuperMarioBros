@@ -1,42 +1,42 @@
 {
-  "imageURL": "/js/images/characters.gif",
+  "imageURL": "/js/images/entities/mario.png",
   "xScale": 1,
   "yScale": 1,
 
   "tiles": [
     {
       "name": "idle",
-      "location": [276, 44],
+      "location": [0, 0],
       "width": 16,
       "height": 16
     },
     {
       "name": "run-1",
-      "location": [290, 44],
+      "location": [16, 0],
       "width": 16,
       "height": 16
     },
     {
       "name": "run-2",
-      "location": [304, 43],
+      "location": [29, 0],
       "width": 16,
       "height": 16
     },
     {
       "name": "run-3",
-      "location": [321, 44],
+      "location": [46, 0],
       "width": 16,
       "height": 16
     },
     {
       "name": "skid",
-      "location": [337, 44],
+      "location": [62, 0],
       "width": 16,
       "height": 16
     },
     {
       "name": "jump",
-      "location": [355, 44],
+      "location": [80, 0],
       "width": 16,
       "height": 16
     }

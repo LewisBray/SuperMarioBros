@@ -65,6 +65,16 @@ export default class Level {
     }
   }
 
+  findTile(name) {
+    let tileToFind = null;
+    this.tiles.forEach(tile => {
+      if (tile.name === name)
+        tileToFind = tile;
+    });
+
+    return tileToFind;
+  }
+
   removeTileToNudge(tileInfo) {
     const tileToNudgeIndex = this.tilesToBump.indexOf(tileInfo);
     this.tilesToBump.splice(tileToNudgeIndex, 1);
@@ -109,6 +119,10 @@ export function createLevel(levelName, levelSpec, entityFactory) {
   });
 
   setupEntities(levelSpec, level, entityFactory);
+
+  const flagTile = level.findTile('flag');
+  if (flagTile)
+    flagTile.xPos += TileSize / 2;  // flag isn't in correct place due to how level tiles are loaded
   
   return level;
 }

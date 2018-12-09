@@ -1,7 +1,7 @@
 import Entity from './entity.js';
-import {loadJSON, loadSpriteSet} from './loaders.js';
+import {loadJSON, loadSpriteSet} from '../loaders.js';
 import {Jump, Move, CollidesWithTiles, CollidesWithEntities, HasMass, Stomper,
-  Killable, Revivable, Collector, StuckInLevel, BumpsBlocks, ScoresPoints} from './traits.js';
+  Killable, Revivable, Collector, StuckInLevel, BumpsBlocks, ScoresPoints} from '../traits.js';
 
 
 const highDrag = 1/2000;
@@ -11,7 +11,7 @@ const lowDrag = 1/5000;
 // loading a character sprite file which is asyncronous.  Once we have these we
 // can set Mario's initial state and any traits he may have.
 export function loadMario() {
-  return loadJSON('/js/animations/mario.json')
+  return loadJSON('/js/specifications/entities/mario.json')
   .then(entitySpec => Promise.all([
     loadSpriteSet(entitySpec),
     entitySpec
