@@ -105,19 +105,21 @@ export function loadEntities() {
 export function loadLayersToDraw(level, levelSpec, camera) {
   return Promise.all(([
     loadJSON(`/js/tilesets/${levelSpec.tileSet}.json`),
+    loadJSON(`/js/itemsets/${levelSpec.tileSet}.json`),
     loadFont()
   ]))
-  .then(([tilesSpec, fontSet]) => Promise.all([
+  .then(([tilesSpec, itemsSpec, fontSet]) => Promise.all([
     loadSpriteSet(tilesSpec),
+    loadSpriteSet(itemsSpec, 8, 8),
     fontSet
   ]))
-  .then(([levelTileSet, fontSet]) => {
+  .then(([levelTileSet, itemsTileSet, fontSet]) => {
     const layers = [];
     layers.push(createBackgroundColourLayer(levelSpec.backgroundColour));
     layers.push(createBackgroundLayer(level, levelTileSet));
     layers.push(createSpriteLayer(level.entities));
+    layers.push(createHUDLayer(fontSet, level, itemsTileSet));
     layers.push(createCameraLayer(camera));
-    layers.push(createHUDLayer(fontSet, level));
   
     return layers;
   });

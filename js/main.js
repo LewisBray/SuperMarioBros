@@ -15,9 +15,9 @@ import {loadJSON, loadEntities, loadLayersToDraw} from './loaders.js';
 //  - score counting (need score to temporarily appear and rise on the HUD layer + bonus points for combos)
 //  - music (won't autoplay without user interaction, will be fixed when we have a menu screen)
 //  - interactable blocks (need coins to shoot out the top, draw on HUD layer with rising scores?)
-//  - proper coin symbol on HUD layer for coins collected
 //  - some small pointless files that could contain more/be gotten rid of
-//  - change music when timer below 100
+//  - optimise music handling in level update loop
+//  - need a better .png file with everything in it or be able to make my own
 
 async function main(canvas) {
   const context = canvas.getContext('2d');

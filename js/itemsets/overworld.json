@@ -1,0 +1,50 @@
+{
+  "imageURL": "/js/images/items.png",
+  "xScale": 1,
+  "yScale": 1,
+
+  "tiles": [
+    {
+      "name": "smallCoin-1",
+      "location": [0, 160],
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "smallCoin-2",
+      "location": [8, 160],
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "smallCoin-3",
+      "location": [16, 160],
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "times",
+      "location": [40, 160],
+      "width": 8,
+      "height": 8
+    }
+  ],
+
+  "animations" : [
+    {
+      "name": "smallCoin",
+      "frameLength": 0.1,
+      "frames": [
+        "smallCoin-1",
+        "smallCoin-1",
+        "smallCoin-1",
+        "smallCoin-1",
+        "smallCoin-1",
+        "smallCoin-1",
+        "smallCoin-2",
+        "smallCoin-3",
+        "smallCoin-2"
+      ]
+    }
+  ]
+}

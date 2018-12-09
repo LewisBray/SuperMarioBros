@@ -9,7 +9,7 @@ const fontSize = 8;
 const Line1 = fontSize;
 const Line2 = 2 * fontSize;
 
-export function createHUDLayer(font, level) {
+export function createHUDLayer(font, level, itemsTileSet) {
   return (context, camera) => {
     font.print('MARIO', context, 3 * 8, Line1);
     const score = addUpPointsCollected(level.entities);
@@ -19,7 +19,9 @@ export function createHUDLayer(font, level) {
     font.print(level.name, context, 33 * 8, Line2);
 
     const numCoins = addUpCoinsCollected(level.entities);
-    font.print('@x' + numCoins.toString().padStart(2, '0'), context, 18 * 8, Line2);  // use coin instead of '@'
+    itemsTileSet.drawAnimation('smallCoin', context, 18 * 8, Line2, level.totalTime);
+    itemsTileSet.draw('times', context, 19 * 8, Line2);
+    font.print(numCoins.toString().padStart(2, '0'), context, 20 * 8, Line2);
 
     font.print('TIME', context, 45 * 8, Line1);
     const time = 400 - Math.floor(2 * level.totalTime);     // need to know rate time flows in Super Mario Bros.
