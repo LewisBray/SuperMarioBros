@@ -1,408 +1,704 @@
 {
   "imageURL": "/js/images/hud.png",
-  "xScale": 8,
-  "yScale": 8,
+  "xScale": 1,
+  "yScale": 1,
 
   "tiles": [
     {
       "name": " ",
-      "location": [0, 0]
+      "location": [0, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "!",
-      "location": [1, 0]
+      "location": [8, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "\"",
-      "location": [2, 0]
+      "location": [16, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "#",
-      "location": [3, 0]
+      "location": [24, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "$",
-      "location": [4, 0]
+      "location": [32, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "%",
-      "location": [5, 0]
+      "location": [40, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "&",
-      "location": [6, 0]
+      "location": [48, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "'",
-      "location": [7, 0]
+      "location": [56, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "(",
-      "location": [8, 0]
+      "location": [64, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": ")",
-      "location": [9, 0]
+      "location": [72, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "*",
-      "location": [10, 0]
+      "location": [80, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "+",
-      "location": [11, 0]
+      "location": [88, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": ",",
-      "location": [12, 0]
+      "location": [96, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "-",
-      "location": [13, 0]
+      "location": [104, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": ".",
-      "location": [14, 0]
+      "location": [112, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "/",
-      "location": [15, 0]
+      "location": [120, 0],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "0",
-      "location": [0, 1]
+      "location": [0, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "1",
-      "location": [1, 1]
+      "location": [8, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "2",
-      "location": [2, 1]
+      "location": [16, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "3",
-      "location": [3, 1]
+      "location": [24, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "4",
-      "location": [4, 1]
+      "location": [32, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "5",
-      "location": [5, 1]
+      "location": [40, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "6",
-      "location": [6, 1]
+      "location": [48, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "7",
-      "location": [7, 1]
+      "location": [56, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "8",
-      "location": [8, 1]
+      "location": [64, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "9",
-      "location": [9, 1]
+      "location": [72, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": ":",
-      "location": [10, 1]
+      "location": [80, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": ";",
-      "location": [11, 1]
+      "location": [88, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "<",
-      "location": [12, 1]
+      "location": [96, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "=",
-      "location": [13, 1]
+      "location": [104, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": ">",
-      "location": [14, 1]
+      "location": [112, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "?",
-      "location": [15, 1]
+      "location": [120, 8],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "@",
-      "location": [0, 2]
+      "location": [0, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "A",
-      "location": [1, 2]
+      "location": [8, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "B",
-      "location": [2, 2]
+      "location": [16, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "C",
-      "location": [3, 2]
+      "location": [24, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "D",
-      "location": [4, 2]
+      "location": [32, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "E",
-      "location": [5, 2]
+      "location": [40, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "F",
-      "location": [6, 2]
+      "location": [48, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "G",
-      "location": [7, 2]
+      "location": [56, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "H",
-      "location": [8, 2]
+      "location": [64, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "I",
-      "location": [9, 2]
+      "location": [72, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "J",
-      "location": [10, 2]
+      "location": [80, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "K",
-      "location": [11, 2]
+      "location": [88, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "L",
-      "location": [12, 2]
+      "location": [96, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "M",
-      "location": [13, 2]
+      "location": [104, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "N",
-      "location": [14, 2]
+      "location": [112, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "O",
-      "location": [15, 2]
+      "location": [120, 16],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "P",
-      "location": [0, 3]
+      "location": [0, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "Q",
-      "location": [1, 3]
+      "location": [8, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "R",
-      "location": [2, 3]
+      "location": [16, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "S",
-      "location": [3, 3]
+      "location": [24, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "T",
-      "location": [4, 3]
+      "location": [32, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "U",
-      "location": [5, 3]
+      "location": [40, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "V",
-      "location": [6, 3]
+      "location": [48, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "W",
-      "location": [7, 3]
+      "location": [56, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "X",
-      "location": [8, 3]
+      "location": [64, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "Y",
-      "location": [9, 3]
+      "location": [72, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "Z",
-      "location": [10, 3]
+      "location": [80, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "[",
-      "location": [11, 3]
+      "location": [88, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "\\",
-      "location": [12, 3]
+      "location": [96, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "]",
-      "location": [13, 3]
+      "location": [104, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "^",
-      "location": [14, 3]
+      "location": [112, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "_",
-      "location": [15, 3]
+      "location": [120, 24],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "`",
-      "location": [0, 4]
+      "location": [0, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "a",
-      "location": [1, 4]
+      "location": [8, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "b",
-      "location": [2, 4]
+      "location": [16, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "c",
-      "location": [3, 4]
+      "location": [24, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "d",
-      "location": [4, 4]
+      "location": [32, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "e",
-      "location": [5, 4]
+      "location": [40, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "f",
-      "location": [6, 4]
+      "location": [48, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "g",
-      "location": [7, 4]
+      "location": [56, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "h",
-      "location": [8, 4]
+      "location": [64, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "i",
-      "location": [9, 4]
+      "location": [72, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "j",
-      "location": [10, 4]
+      "location": [80, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "k",
-      "location": [11, 4]
+      "location": [88, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "l",
-      "location": [12, 4]
+      "location": [96, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "m",
-      "location": [13, 4]
+      "location": [104, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "n",
-      "location": [14, 4]
+      "location": [112, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "o",
-      "location": [15, 4]
+      "location": [120, 32],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "p",
-      "location": [0, 5]
+      "location": [0, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "q",
-      "location": [1, 5]
+      "location": [8, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "r",
-      "location": [2, 5]
+      "location": [16, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "s",
-      "location": [3, 5]
+      "location": [24, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "t",
-      "location": [4, 5]
+      "location": [32, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "u",
-      "location": [5, 5]
+      "location": [40, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "v",
-      "location": [6, 5]
+      "location": [48, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "w",
-      "location": [7, 5]
+      "location": [56, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "x",
-      "location": [8, 5]
+      "location": [64, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "y",
-      "location": [9, 5]
+      "location": [72, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "z",
-      "location": [10, 5]
+      "location": [80, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "{",
-      "location": [11, 5]
+      "location": [88, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "¦",
-      "location": [12, 5]
+      "location": [96, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "}",
-      "location": [13, 5]
+      "location": [104, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "~",
-      "location": [14, 5]
+      "location": [112, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "|",
-      "location": [15, 5]
+      "location": [120, 40],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "smallCoin-1",
-      "location": [0, 6]
+      "location": [0, 48],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "smallCoin-2",
-      "location": [1, 6]
+      "location": [8, 48],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "smallCoin-3",
-      "location": [2, 6]
+      "location": [16, 48],
+      "width": 8,
+      "height": 8
     },
     {
       "name": "times",
-      "location": [5, 6]
+      "location": [40, 48],
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "miniWhite0",
+      "location": [0, 56],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniWhite1",
+      "location": [4, 56],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniWhite2",
+      "location": [8, 56],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniWhite4",
+      "location": [12, 56],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniWhite5",
+      "location": [16, 56],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniWhite8",
+      "location": [20, 56],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniPink0",
+      "location": [0, 64],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniPink1",
+      "location": [4, 64],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniPink2",
+      "location": [8, 64],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniPink4",
+      "location": [12, 64],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniPink5",
+      "location": [16, 64],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "miniPink8",
+      "location": [20, 64],
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "spinningCoin-1",
+      "location": [48, 48],
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "spinningCoin-2",
+      "location": [64, 48],
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "spinningCoin-3",
+      "location": [80, 48],
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "spinningCoin-4",
+      "location": [96, 48],
+      "width": 16,
+      "height": 16
     }
   ],
 
@@ -420,6 +716,16 @@
         "smallCoin-2",
         "smallCoin-3",
         "smallCoin-2"
+      ]
+    },
+    {
+      "name": "spinningCoin",
+      "frameLength": 0.05,
+      "frames": [
+        "spinningCoin-1",
+        "spinningCoin-2",
+        "spinningCoin-3",
+        "spinningCoin-4"
       ]
     }
   ]

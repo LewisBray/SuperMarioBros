@@ -1,4 +1,4 @@
-import {toIndex, searchByRange} from './tileresolution.js';
+import {TileSize, toIndex, searchByRange} from './tileresolution.js';
 
 // Traits are mini classes that each handle the logic for an
 // individual trait an entity can have, the Entity class then
@@ -410,15 +410,19 @@ export class BumpsBlocks extends Trait {
   constructor() {
     super('bumpsBlocks');
 
-    this.tilesToBump = [];
+    this.hudAnimations = [];
+    this.tileAnimations = [];
   }
 
   update(entity, deltaTime, level) {
-    if (this.tilesToBump.length === 0)
+    if (this.tileAnimations.length === 0)
       return;
 
-    level.tilesToBump.push(...this.tilesToBump);
-    this.tilesToBump.length = 0;
+    level.animations.get('tiles').push(...this.tileAnimations);
+    this.tileAnimations.length = 0;
+
+    level.animations.get('hud').push(...this.hudAnimations);
+    this.hudAnimations.length = 0;
   }
 
   tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
@@ -435,15 +439,21 @@ export class BumpsBlocks extends Trait {
       else if (tile.tile.name === 'question') {
         if (entity.collector)
           entity.collector.coinsCollected++;
-        if (entity.scoresPoints)
+        if (entity.scoresPoints) {
           entity.scoresPoints.pointsScored += 200;
+          this.hudAnimations.push({
+            type: 'coin',
+            xPos: tile.tile.xPos,
+            yPos: tile.tile.yPos - TileSize,
+            frame: 0
+          });
+        }
         entity.playAudio('collectCoin');
       }
 
       if (tile.tile.name !== 'bumpedBlock') {
-        this.tilesToBump.push({
-          xIndex: toIndex(tile.left),
-          yIndex: toIndex(tile.top),
+        this.tileAnimations.push({
+          tile: tile.tile,
           frame: 0
         });
       }
@@ -478,5 +488,11 @@ export class ScoresPoints extends Trait {
     super('scoresPoints');
 
     this.pointsScored = 0;
+    this.hudAnimations = [];
+  }
+
+  update(entity, deltaTime, level) {
+    level.animations.get('hud').push(...this.hudAnimations);
+    this.hudAnimations.length = 0;
   }
 }

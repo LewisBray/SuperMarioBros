@@ -10,10 +10,14 @@ export default class Level {
     this.gravity = 1500;
     this.totalTime = 0;
     this.tiles = null;
-    this.tilesToBump = [];
     this.entities = [];
     this.revivableEntities = [];
     this.audio = new Map();
+
+    this.animations = new Map();
+    ['tiles', 'hud'].forEach(layer => {
+      this.animations.set(layer, []);
+    });
   }
 
   update(deltaTime) {
@@ -25,7 +29,7 @@ export default class Level {
       entity.revivable.update(entity, deltaTime, this);
     });
 
-    this.tilesToBump.forEach(tileInfo => this.bumpTile(tileInfo));
+    this.animations.get('tiles').forEach(tileInfo => this.bumpTile(tileInfo));
 
     // if (this.totalTime < 150)
     //   this.audio.get('mainTheme').play();
@@ -39,29 +43,17 @@ export default class Level {
 
   bumpTile(tileInfo) {
     tileInfo.frame++;
-    if (tileInfo.frame <= 0 || tileInfo.frame > 6) {
-      this.removeTileToNudge(tileInfo);
-      return;
-    }
 
-    const levelTile = this.tiles.get(tileInfo.xIndex, tileInfo.yIndex);
     // should this animation be defined in JSON, not sure it needs to be if it's a one off
-    switch (tileInfo.frame) {
-      case 1:
-      case 2:
-      case 3:
-        levelTile.yPos -= 2;
-        break;
-      case 4:
-      case 5:
-        levelTile.yPos += 2;
-        break;
-      case 6:
-        levelTile.yPos += 2;
-        if (levelTile.name === 'question')
-          levelTile.name = 'bumpedBlock';
-        this.removeTileToNudge(tileInfo);
-        break;
+    if (tileInfo.frame >= 1 && tileInfo.frame <= 3)
+      tileInfo.tile.yPos -= 2;
+    else if (tileInfo.frame >= 4 && tileInfo.frame <= 6) {
+      tileInfo.tile.yPos += 2;
+      if (tileInfo.frame === 6) {
+        if (tileInfo.tile.name === 'question')
+          tileInfo.tile.name = 'bumpedBlock';
+        this.removeAnimation('tiles', tileInfo);
+      }
     }
   }
 
@@ -75,9 +67,10 @@ export default class Level {
     return tileToFind;
   }
 
-  removeTileToNudge(tileInfo) {
-    const tileToNudgeIndex = this.tilesToBump.indexOf(tileInfo);
-    this.tilesToBump.splice(tileToNudgeIndex, 1);
+  removeAnimation(layer, animationInfo) {
+    const animationLayer = this.animations.get(layer);
+    const animationIndex = animationLayer.indexOf(animationInfo);
+    animationLayer.splice(animationIndex, 1);
   }
 
   removeEntity(entity) {

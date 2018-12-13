@@ -10,12 +10,61 @@ const Line1 = FontSize;
 const Line2 = 2 * FontSize;
 
 export function createHUDLayer(hudTileSet, level) {
+  const marioTextCanvas = createTextCanvas('MARIO', hudTileSet);
+  const worldTextCanvas = createTextCanvas('WORLD', hudTileSet);
+  const timeTextCanvas = createTextCanvas('TIME', hudTileSet);
+
+  const miniTextCanvases = new Map();
+  ['100', '200', '500', '800'].forEach(score => {
+    miniTextCanvases.set(score, createTextCanvas(score, hudTileSet, 'miniWhite'));
+  });
+
+  const hudAnimations = level.animations.get('hud');
+
+  function animateSpinningCoin(coinAnimationInfo, context, camera) {
+    coinAnimationInfo.frame++;
+    if (coinAnimationInfo.frame >= 1 && coinAnimationInfo.frame <= 10)
+      coinAnimationInfo.yPos -= 2;
+    else if (coinAnimationInfo.frame >= 11 && coinAnimationInfo.frame <= 15)
+      coinAnimationInfo.yPos -= 1;
+    else if (coinAnimationInfo.frame >= 16 && coinAnimationInfo.frame <= 20)
+      coinAnimationInfo.yPos += 1;
+    else if (coinAnimationInfo.frame >= 21 && coinAnimationInfo.frame <= 30) {
+      coinAnimationInfo.yPos += 2;
+      if (coinAnimationInfo.frame === 30) {
+        hudAnimations.push({
+          type: 'score',
+          points: '200',
+          xPos: coinAnimationInfo.xPos + 2,
+          yPos: coinAnimationInfo.yPos,
+          frame: 0
+        });
+      }
+    }
+    else
+      level.removeAnimation('hud', coinAnimationInfo);
+
+    hudTileSet.drawAnimation('spinningCoin', context,
+      coinAnimationInfo.xPos - camera.xPos, coinAnimationInfo.yPos, level.totalTime);
+  }
+
+  function animateRisingText(scoreAnimationInfo, context, camera) {  
+    scoreAnimationInfo.frame++;
+    if (scoreAnimationInfo.frame >= 1 && scoreAnimationInfo.frame <= 30)
+      scoreAnimationInfo.yPos -= 1;
+    else
+      level.removeAnimation('hud', scoreAnimationInfo);
+
+    context.drawImage(miniTextCanvases.get(scoreAnimationInfo.points),
+      scoreAnimationInfo.xPos - camera.xPos, scoreAnimationInfo.yPos);
+  }
+
   return (context, camera) => {
-    printText('MARIO', context, 3 * FontSize, Line1, hudTileSet);
+    context.drawImage(marioTextCanvas, 3 * FontSize, Line1);
     const score = addUpPointsCollected(level.entities);
     printText(score.toString().padStart(6, '0'), context, 3 * FontSize, Line2, hudTileSet);
 
-    printText('WORLD', context, 32 * FontSize, Line1, hudTileSet);
+    context.drawImage(worldTextCanvas, 32 * FontSize, Line1);
     printText(level.name, context, 33 * FontSize, Line2, hudTileSet);
 
     const numCoins = addUpCoinsCollected(level.entities);
@@ -23,10 +72,40 @@ export function createHUDLayer(hudTileSet, level) {
     hudTileSet.draw('times', context, 19 * FontSize, Line2);
     printText(numCoins.toString().padStart(2, '0'), context, 20 * FontSize, Line2, hudTileSet);
 
-    printText('TIME', context, 45 * FontSize, Line1, hudTileSet);
+    context.drawImage(timeTextCanvas, 45 * FontSize, Line1);
     const time = 400 - Math.floor(2 * level.totalTime);     // need to know rate time flows in Super Mario Bros.
     printText(time.toString().padStart(3, '0'), context, 46 * FontSize, Line2, hudTileSet);
+
+    hudAnimations.forEach(animationInfo => {
+      if (animationInfo.type === 'coin')
+        animateSpinningCoin(animationInfo, context, camera);
+      else if (animationInfo.type === 'score')
+        animateRisingText(animationInfo, context, camera);
+      else {
+        console.log('Unhandled HUD animation:', animationInfo)
+        level.removeAnimation('hud', animationInfo);
+      }
+    });
   };
+}
+
+function createTextCanvas(string, hudTileSet, modifier = '') {
+  const textBuffer = document.createElement('canvas');
+  textBuffer.height = FontSize;
+  textBuffer.width = [...string].reduce((bufferWidth, character) => {
+    const tileSetCharacterBuffer = hudTileSet.tiles.get(modifier + character)[0];
+    return bufferWidth + tileSetCharacterBuffer.width;
+  }, 0);
+
+  let xDrawPos = 0;
+  const textBufferContext = textBuffer.getContext('2d');
+  [...string].forEach((character, index) => {
+    const tileSetCharacterBuffer = hudTileSet.tiles.get(modifier + character)[0];
+    textBufferContext.drawImage(tileSetCharacterBuffer, xDrawPos, 0);
+    xDrawPos += tileSetCharacterBuffer.width;
+  });
+
+  return textBuffer;
 }
 
 function printText(text, context, xPos, yPos, spriteSet) {

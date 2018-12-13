@@ -31,8 +31,16 @@ class Behaviour extends Trait {
       us.aiWalk.disable();
       us.killable.kill(2);
       them.stomper.bounce(them, us);
-      if (them.scoresPoints)
+      if (them.scoresPoints) {
         them.scoresPoints.pointsScored += 100;
+        them.scoresPoints.hudAnimations.push({
+          type: 'score',
+          points: '100',
+          xPos: us.collisionBox.left + 2,
+          yPos: us.collisionBox.top - us.height,
+          frame: 0
+        });
+      }
     }
     else if (them.killable)
       them.killable.kill(0);
