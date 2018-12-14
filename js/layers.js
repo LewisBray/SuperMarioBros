@@ -146,24 +146,19 @@ export function createBackgroundColourLayer(backgroundColour) {
 
 
 export function createBackgroundLayer(level, tileSet) {
-  const backgroundBuffer = document.createElement('canvas');
-  backgroundBuffer.width = 26 * 16 + 16;    // Remove the + 16 later
-  backgroundBuffer.height = 15 * 16;
-
-  const backgroundContext = backgroundBuffer.getContext('2d');
-
-  function drawBackgroundSubrange(startIndex, endIndex) {
-    backgroundContext.clearRect(0, 0, backgroundBuffer.width, backgroundBuffer.height);
+  function drawBackgroundSubrange(startIndex, endIndex, context, camera) {
     for (let x = startIndex; x <= endIndex; ++x) {
       const column = level.tiles.grid[x];
       if (column) {
         column.forEach((tile, y) => {
           if (tileSet.animations.has(tile.name)) {
-            tileSet.drawAnimation(tile.name, backgroundContext,
-              tile.xPos - startIndex * TileSize, tile.yPos, level.totalTime);
+            tileSet.drawAnimation(tile.name, context,
+              (tile.xPos - startIndex * TileSize) - (camera.xPos % 16),
+              tile.yPos, level.totalTime);
           }
           else
-           tileSet.draw(tile.name, backgroundContext, tile.xPos - startIndex * TileSize, tile.yPos);
+           tileSet.draw(tile.name, context,
+            (tile.xPos - startIndex * TileSize) - (camera.xPos % 16), tile.yPos);
         });
       }
     }
@@ -174,8 +169,7 @@ export function createBackgroundLayer(level, tileSet) {
     const startIndex = toIndex(camera.xPos);
     const endIndex = startIndex + drawWidth;
 
-    drawBackgroundSubrange(startIndex, endIndex);
-    context.drawImage(backgroundBuffer, -camera.xPos % 16, 0);
+    drawBackgroundSubrange(startIndex, endIndex, context, camera);
   };
 }
 
