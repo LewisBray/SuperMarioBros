@@ -235,10 +235,10 @@ export class CollidesWithTiles extends Trait {
 
   update(entity, deltaTime, level) {          // really awkward that position gets updated here,...
     entity.pos.x += entity.vel.x * deltaTime; // ...not sure what to do about this
-    this.checkX(entity, level.tiles);
+    this.checkX(entity, level.tiles.get('collision'));
 
     entity.pos.y += entity.vel.y * deltaTime;
-    this.checkY(entity, level.tiles);
+    this.checkY(entity, level.tiles.get('collision'));
   }
 
   tileCollision(entity, side, tileCollidedWith, candidateColllisionTiles) {

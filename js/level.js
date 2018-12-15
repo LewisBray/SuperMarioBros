@@ -9,10 +9,10 @@ export default class Level {
     this.length = 0;
     this.gravity = 1500;
     this.totalTime = 0;
-    this.tiles = null;
     this.entities = [];
     this.revivableEntities = [];
     this.audio = new Map();
+    this.tiles = new Map();
 
     this.animations = new Map();
     ['tiles', 'hud'].forEach(layer => {
@@ -59,7 +59,15 @@ export default class Level {
 
   findTile(name) {
     let tileToFind = null;
-    this.tiles.forEach(tile => {
+    this.tiles.get('scenery').forEach(tile => {
+      if (tile.name === name)
+        tileToFind = tile;
+    });
+
+    if (tileToFind)
+      return tileToFind;
+
+    this.tiles.get('collision').forEach(tile => {
       if (tile.name === name)
         tileToFind = tile;
     });
@@ -104,8 +112,8 @@ export function createLevel(levelName, levelSpec, entityFactory) {
   level.name = levelName;
   level.length = levelSpec.length;
 
-  const mergedLayers = levelSpec.layers.reduce((tiles, layer) => tiles.concat(layer.tiles), []);
-  level.tiles = createTileGrid(mergedLayers, levelSpec.patterns);
+  level.tiles.set('scenery', createTileGrid(levelSpec.sceneryLayer.tiles, levelSpec.patterns));
+  level.tiles.set('collision', createTileGrid(levelSpec.collisionLayer.tiles, levelSpec.patterns));
 
   levelSpec.audio.forEach(audio => {
     level.audio.set(audio.name, new Audio(`/js/music/level/${audio.file}.mp3`));

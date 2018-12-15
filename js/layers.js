@@ -145,20 +145,20 @@ export function createBackgroundColourLayer(backgroundColour) {
 }
 
 
-export function createBackgroundLayer(level, tileSet) {
+export function createBackgroundLayer(level, layer, tileSet) {
   function drawBackgroundSubrange(startIndex, endIndex, context, camera) {
     for (let x = startIndex; x <= endIndex; ++x) {
-      const column = level.tiles.grid[x];
+      const column = level.tiles.get(layer).grid[x];
       if (column) {
         column.forEach((tile, y) => {
           if (tileSet.animations.has(tile.name)) {
             tileSet.drawAnimation(tile.name, context,
-              (tile.xPos - startIndex * TileSize) - (camera.xPos % 16),
+              tile.xPos - startIndex * TileSize - (camera.xPos % 16),
               tile.yPos, level.totalTime);
           }
           else
            tileSet.draw(tile.name, context,
-            (tile.xPos - startIndex * TileSize) - (camera.xPos % 16), tile.yPos);
+            tile.xPos - startIndex * TileSize - (camera.xPos % 16), tile.yPos);
         });
       }
     }

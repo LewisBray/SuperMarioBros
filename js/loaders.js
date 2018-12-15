@@ -95,8 +95,9 @@ export function loadLayersToDraw(level, levelSpec, camera) {
   .then(([levelTileSet, hudTileSet]) => {
     const layers = [];
     layers.push(createBackgroundColourLayer(levelSpec.backgroundColour));
-    layers.push(createBackgroundLayer(level, levelTileSet));
+    layers.push(createBackgroundLayer(level, 'scenery', levelTileSet));
     layers.push(createSpriteLayer(level.entities));
+    layers.push(createBackgroundLayer(level, 'collision', levelTileSet));
     layers.push(createHUDLayer(hudTileSet, level));
     layers.push(createCameraLayer(camera));
   
