@@ -1,0 +1,19 @@
+{
+  "imageURL": "/js/images/entities/supermushroom.png",
+  "xScale": 16,
+  "yScale": 16,
+
+  "tiles": [
+    {
+      "name": "mushroom",
+      "location": [0, 0]
+    }
+  ],
+
+  "audio": [
+    {
+      "name": "spawn",
+      "file": "powerup appears"
+    }
+  ]
+}

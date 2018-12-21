@@ -135,7 +135,7 @@ export class AIWalk extends Trait {
   }
 
   update(entity, deltaTime, level) {
-      entity.vel.x = this.speed;
+    entity.vel.x = this.speed;
   }
 
   enable() {
@@ -412,17 +412,46 @@ export class BumpsBlocks extends Trait {
 
     this.hudAnimations = [];
     this.tileAnimations = [];
+    this.entitiesToSpawnInfo = [];
   }
 
   update(entity, deltaTime, level) {
-    if (this.tileAnimations.length === 0)
-      return;
+    this.tileAnimations.forEach(tileInfo => this.bumpTile(tileInfo));
 
-    level.animations.get('tiles').push(...this.tileAnimations);
-    this.tileAnimations.length = 0;
-
-    level.animations.get('hud').push(...this.hudAnimations);
+    level.hudAnimations.push(...this.hudAnimations);
     this.hudAnimations.length = 0;
+
+    level.entitiesToSpawnInfo.push(...this.entitiesToSpawnInfo);
+    this.entitiesToSpawnInfo.length = 0;
+  }
+
+  bumpTile(tileInfo) {
+    tileInfo.frame++;
+
+    if (tileInfo.frame >= 1 && tileInfo.frame <= 3)
+      tileInfo.tile.yPos -= 2;
+    else if (tileInfo.frame >= 4 && tileInfo.frame <= 6) {
+      tileInfo.tile.yPos += 2;
+      if (tileInfo.frame === 6) {
+        if (tileInfo.tile.contains && tileInfo.tile.contains === 'superMushroom') {
+          tileInfo.tile.quantity--;
+          this.entitiesToSpawnInfo.push({
+            name: 'superMushroom',
+            xPos: tileInfo.tile.xPos,
+            yPos: tileInfo.tile.yPos
+          });
+        }
+
+        if (tileInfo.tile.quantity <= 0) {
+          tileInfo.tile.name = 'bumpedBlock';
+          delete tileInfo.tile.contains;
+          delete tileInfo.tile.quantity;
+        }
+
+        const tileInfoIndex = this.tileAnimations.indexOf(tileInfo);
+        this.hudAnimations.splice(tileInfoIndex, 1);
+      }
+    }
   }
 
   tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
@@ -433,22 +462,29 @@ export class BumpsBlocks extends Trait {
       this.tilesAboveEntity(entity, tileCollidedWith, candidateCollisionTiles);
 
     tilesAboveEntity.forEach(tile => {
-      if (tile.tile.name === 'bumpedBlock' || tile.tile.name === 'brickTop') {
-        entity.playAudio('bump');
+      if (!tile.tile.contains) {
+        if (tile.tile.name === 'bumpedBlock' || tile.tile.name === 'brickTop')
+          entity.playAudio('bump');
       }
-      else if (tile.tile.name === 'question') {
-        if (entity.collector)
-          entity.collector.coinsCollected++;
-        if (entity.scoresPoints) {
-          entity.scoresPoints.pointsScored += 200;
-          this.hudAnimations.push({
-            type: 'coin',
-            xPos: tile.tile.xPos,
-            yPos: tile.tile.yPos - TileSize,
-            frame: 0
-          });
+      else {
+        if (tile.tile.contains === 'coin') {    // power-ups are spawned after tile has been bumped
+          if (entity.collector) {
+            entity.collector.coinsCollected++;
+            tile.tile.quantity--;
+          }
+
+          if (entity.scoresPoints) {
+            entity.scoresPoints.pointsScored += 200;
+            this.hudAnimations.push({
+              type: 'coin',
+              xPos: tile.tile.xPos,
+              yPos: tile.tile.yPos - TileSize,
+              frame: 0
+            }); 
+          }
+
+          entity.playAudio('collectCoin');
         }
-        entity.playAudio('collectCoin');
       }
 
       if (tile.tile.name !== 'bumpedBlock') {
@@ -492,7 +528,31 @@ export class ScoresPoints extends Trait {
   }
 
   update(entity, deltaTime, level) {
-    level.animations.get('hud').push(...this.hudAnimations);
+    level.hudAnimations.push(...this.hudAnimations);
     this.hudAnimations.length = 0;
+  }
+}
+
+
+export class SpawnsFromBlock extends Trait {
+  constructor() {
+    super('spawnsFromBlock');
+
+    this.spawning = true;
+    this.spawnFrame = 0;
+    this.spawnDuration = 32;
+  }
+
+  update(entity, deltaTime, level) {
+    if (!this.spawning)
+      return;
+
+    ++this.spawnFrame;
+    entity.pos.y -= 0.5;
+    if (this.spawnFrame >= this.spawnDuration) {
+      this.spawning = false;
+      entity.addTrait(new HasMass());
+      entity.addTrait(new CollidesWithTiles());
+    }
   }
 }

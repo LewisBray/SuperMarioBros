@@ -15,8 +15,23 @@ import {loadJSON, loadEntities, loadLayersToDraw} from './loaders.js';
 //  - bonus points for combos (need booleans in koopa entity to keep track of it all)
 //  - music (won't autoplay without user interaction, will be fixed when we have a menu screen)
 //  - some small pointless files that could contain more/be gotten rid of
-//  - optimise music handling in level update loop
-//  - have less string checking and use symbols to optimise performance, particularly in things like tile collision
+//  - don't need to store tile type since separating layers and less checking needed in tile collision detection
+//  - use async/await over promises for readability
+//  - tiles that are being bumped should interact with entities above them
+//  - level class getting big, maybe break into smaller entities and make a GameState object to update?
+
+// Optimisations
+//  - object pooling for entities
+//  - use symbols over strings? (I'm guessing there's a performance increase, if not use ints?)
+//  - reduce number of maps
+//  - don't calculate score and coins collected every frame
+//  - look at offscreen buffers again, seems weird how performance gets worse for me
+//  - remove camera layer
+//  - make canvas size the final size and adjust everything accordingly
+//  - write own array item removal function that doesn't return anything (reduces garbage to collect)
+//  - make sure no functions/objects are created inside game loop if not necessary
+//  - pull as much as possible out of game loop functions
+//  - canvas property setting is expensive (apparently) so remove from game loop
 
 async function main(canvas) {
   const context = canvas.getContext('2d');
@@ -41,7 +56,7 @@ async function main(canvas) {
   
   const timer = new Timer(1/60);
   timer.update = deltaTime => {
-    level.update(deltaTime);
+    level.update(deltaTime, createEntity);
     camera.followEntity(mario, level.length);
     layersToDraw.forEach(drawLayer => drawLayer(context, camera));
   };

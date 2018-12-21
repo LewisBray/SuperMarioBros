@@ -713,5 +713,70 @@
         [368, 112]
       ]
     }
+  ],
+
+  "items": [
+    {
+      "name": "coin",
+      "info": [
+        {
+          "position": [16, 9],
+          "quantity": 1
+        },
+        {
+          "position": [23, 9],
+          "quantity": 1
+        },
+        {
+          "position": [22, 5],
+          "quantity": 1
+        },
+        {
+          "position": [94, 5],
+          "quantity": 1
+        },
+        {
+          "position": [106, 9],
+          "quantity": 1
+        },
+        {
+          "position": [109, 9],
+          "quantity": 1
+        },
+        {
+          "position": [112, 9],
+          "quantity": 1
+        },
+        {
+          "position": [129, 5],
+          "quantity": 1
+        },
+        {
+          "position": [130, 5],
+          "quantity": 1
+        },
+        {
+          "position": [170, 9],
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "superMushroom",
+      "info": [
+        {
+          "position": [21, 9],
+          "quantity": 1
+        },
+        {
+          "position": [78, 9],
+          "quantity": 1
+        },
+        {
+          "position": [109, 5],
+          "quantity": 1
+        }
+      ]
+    }
   ]
 }

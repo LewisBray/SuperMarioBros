@@ -28,6 +28,8 @@ class Behaviour extends Trait {
     
     if (them.collector) {
       them.collector.coinsCollected++;
+      if (them.scoresPoints)
+        them.scoresPoints.pointsScored += 200;
       this.collected = true;
       them.playAudio('collectCoin');
     }

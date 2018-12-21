@@ -15,11 +15,9 @@ export function createHUDLayer(hudTileSet, level) {
   const timeTextCanvas = createTextCanvas('TIME', hudTileSet);
 
   const miniTextCanvases = new Map();
-  ['100', '200', '500', '800'].forEach(score => {
+  ['100', '200', '500', '800', '1000'].forEach(score => {
     miniTextCanvases.set(score, createTextCanvas(score, hudTileSet, 'miniWhite'));
   });
-
-  const hudAnimations = level.animations.get('hud');
 
   function animateSpinningCoin(coinAnimationInfo, context, camera) {
     coinAnimationInfo.frame++;
@@ -32,7 +30,7 @@ export function createHUDLayer(hudTileSet, level) {
     else if (coinAnimationInfo.frame >= 21 && coinAnimationInfo.frame <= 30) {
       coinAnimationInfo.yPos += 2;
       if (coinAnimationInfo.frame === 30) {
-        hudAnimations.push({
+        level.hudAnimations.push({
           type: 'score',
           points: '200',
           xPos: coinAnimationInfo.xPos + 2,
@@ -41,8 +39,6 @@ export function createHUDLayer(hudTileSet, level) {
         });
       }
     }
-    else
-      level.removeAnimation('hud', coinAnimationInfo);
 
     hudTileSet.drawAnimation('spinningCoin', context,
       coinAnimationInfo.xPos - camera.xPos, coinAnimationInfo.yPos, level.totalTime);
@@ -52,8 +48,6 @@ export function createHUDLayer(hudTileSet, level) {
     scoreAnimationInfo.frame++;
     if (scoreAnimationInfo.frame >= 1 && scoreAnimationInfo.frame <= 30)
       scoreAnimationInfo.yPos -= 1;
-    else
-      level.removeAnimation('hud', scoreAnimationInfo);
 
     context.drawImage(miniTextCanvases.get(scoreAnimationInfo.points),
       scoreAnimationInfo.xPos - camera.xPos, scoreAnimationInfo.yPos);
@@ -76,14 +70,20 @@ export function createHUDLayer(hudTileSet, level) {
     const time = 400 - Math.floor(2 * level.totalTime);     // need to know rate time flows in Super Mario Bros.
     printText(time.toString().padStart(3, '0'), context, 46 * FontSize, Line2, hudTileSet);
 
-    hudAnimations.forEach(animationInfo => {
+    level.hudAnimations.forEach(animationInfo => {
+      if (animationInfo.frame < 0 || animationInfo.frame > 30) {
+        const animationIndex = level.hudAnimations.indexOf(animationInfo);
+        level.hudAnimations.splice(animationIndex, 1);
+        return;
+      }
+
       if (animationInfo.type === 'coin')
         animateSpinningCoin(animationInfo, context, camera);
       else if (animationInfo.type === 'score')
         animateRisingText(animationInfo, context, camera);
       else {
-        console.log('Unhandled HUD animation:', animationInfo)
-        level.removeAnimation('hud', animationInfo);
+        console.warn('Unhandled HUD animation:', animationInfo);
+        level.removeAnimation(animationInfo);
       }
     });
   };

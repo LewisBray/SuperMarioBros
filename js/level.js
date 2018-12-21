@@ -10,26 +10,30 @@ export default class Level {
     this.gravity = 1500;
     this.totalTime = 0;
     this.entities = [];
+    this.entitiesToSpawnInfo = [];
     this.revivableEntities = [];
+    this.hudAnimations = [];
     this.audio = new Map();
     this.tiles = new Map();
-
-    this.animations = new Map();
-    ['tiles', 'hud'].forEach(layer => {
-      this.animations.set(layer, []);
-    });
   }
 
-  update(deltaTime) {
+  update(deltaTime, createEntity) {
     this.entities.forEach(entity => {
       entity.update(deltaTime, this);
     });
 
+    this.entitiesToSpawnInfo.forEach(entityInfo => {
+      const newEntity = createEntity[entityInfo.name]();
+      newEntity.pos.x = entityInfo.xPos;
+      newEntity.pos.y = entityInfo.yPos;
+      this.entities.push(newEntity);
+      newEntity.playAudio('spawn');
+    });
+    this.entitiesToSpawnInfo.length = 0;
+
     this.revivableEntities.forEach(entity => {
       entity.revivable.update(entity, deltaTime, this);
     });
-
-    this.animations.get('tiles').forEach(tileInfo => this.bumpTile(tileInfo));
 
     // if (this.totalTime < 150)
     //   this.audio.get('mainTheme').play();
@@ -39,22 +43,6 @@ export default class Level {
     // }
 
     this.totalTime += deltaTime;
-  }
-
-  bumpTile(tileInfo) {
-    tileInfo.frame++;
-
-    // should this animation be defined in JSON, not sure it needs to be if it's a one off
-    if (tileInfo.frame >= 1 && tileInfo.frame <= 3)
-      tileInfo.tile.yPos -= 2;
-    else if (tileInfo.frame >= 4 && tileInfo.frame <= 6) {
-      tileInfo.tile.yPos += 2;
-      if (tileInfo.frame === 6) {
-        if (tileInfo.tile.name === 'question')
-          tileInfo.tile.name = 'bumpedBlock';
-        this.removeAnimation('tiles', tileInfo);
-      }
-    }
   }
 
   findTile(name) {
@@ -75,10 +63,9 @@ export default class Level {
     return tileToFind;
   }
 
-  removeAnimation(layer, animationInfo) {
-    const animationLayer = this.animations.get(layer);
-    const animationIndex = animationLayer.indexOf(animationInfo);
-    animationLayer.splice(animationIndex, 1);
+  removeAnimation(animationInfo) {
+    const animationIndex = this.hudAnimations.indexOf(animationInfo);
+    this.hudAnimations.splice(animationIndex, 1);
   }
 
   removeEntity(entity) {
@@ -114,6 +101,17 @@ export function createLevel(levelName, levelSpec, entityFactory) {
 
   level.tiles.set('scenery', createTileGrid(levelSpec.sceneryLayer.tiles, levelSpec.patterns));
   level.tiles.set('collision', createTileGrid(levelSpec.collisionLayer.tiles, levelSpec.patterns));
+
+  levelSpec.items.forEach(item => {
+    item.info.forEach(info => {
+      const levelTile = level.tiles.get('collision').get(info.position[0], info.position[1]);
+      if (!levelTile)
+        return;
+      
+      levelTile.contains = item.name;
+      levelTile.quantity = info.quantity;  
+    })
+  });
 
   levelSpec.audio.forEach(audio => {
     level.audio.set(audio.name, new Audio(`/js/music/level/${audio.file}.mp3`));
