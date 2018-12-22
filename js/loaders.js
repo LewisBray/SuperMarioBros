@@ -4,6 +4,7 @@ import {loadGoomba} from './entities/goomba.js';
 import {loadKoopa} from './entities/koopa.js';
 import {loadCoin} from './entities/coin.js';
 import {loadSuperMushroom} from './entities/supermushroom.js';
+import {loadPowerStar} from './entities/powerstar.js';
 import {createBackgroundColourLayer, createBackgroundLayer,
   createSpriteLayer, createCameraLayer, createHUDLayer} from './layers.js';
 
@@ -77,7 +78,8 @@ export function loadEntities() {
     loadGoomba().then(addEntity('goomba')),
     loadKoopa().then(addEntity('koopa')),
     loadCoin().then(addEntity('coin')),
-    loadSuperMushroom().then(addEntity('superMushroom'))
+    loadSuperMushroom().then(addEntity('superMushroom')),
+    loadPowerStar().then(addEntity('powerStar'))
   ])
   .then(() => {
     return entityFactory;

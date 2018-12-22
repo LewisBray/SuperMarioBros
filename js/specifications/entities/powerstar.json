@@ -1,0 +1,44 @@
+{
+  "imageURL": "/js/images/entities/powerstar.png",
+  "xScale": 16,
+  "yScale": 16,
+
+  "tiles": [
+    {
+      "name": "powerStar-1",
+      "location": [0, 0]
+    },
+    {
+      "name": "powerStar-2",
+      "location": [1, 0]
+    },
+    {
+      "name": "powerStar-3",
+      "location": [2, 0]
+    },
+    {
+      "name": "powerStar-4",
+      "location": [3, 0]
+    }
+  ],
+
+  "animations": [
+    {
+      "name": "powerStar",
+      "frameLength": 0.2,
+      "frames": [
+        "powerStar-1",
+        "powerStar-2",
+        "powerStar-3",
+        "powerStar-4"
+      ]
+    }
+  ],
+
+  "audio": [
+    {
+      "name": "spawn",
+      "file": "powerup appears"
+    }
+  ]
+}

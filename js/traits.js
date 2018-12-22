@@ -433,10 +433,10 @@ export class BumpsBlocks extends Trait {
     else if (tileInfo.frame >= 4 && tileInfo.frame <= 6) {
       tileInfo.tile.yPos += 2;
       if (tileInfo.frame === 6) {
-        if (tileInfo.tile.contains && tileInfo.tile.contains === 'superMushroom') {
+        if (tileInfo.tile.contains) {
           tileInfo.tile.quantity--;
           this.entitiesToSpawnInfo.push({
-            name: 'superMushroom',
+            name: tileInfo.tile.contains,
             xPos: tileInfo.tile.xPos,
             yPos: tileInfo.tile.yPos
           });

@@ -777,6 +777,15 @@
           "quantity": 1
         }
       ]
+    },
+    {
+      "name": "powerStar",
+      "info": [
+        {
+          "position": [101, 9],
+          "quantity": 1
+        }
+      ]
     }
   ]
 }
