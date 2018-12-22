@@ -121,7 +121,7 @@ export class Move extends Trait {
 
 
 // Need better name for this trait, it's movement that bounces off walls regardless of walking
-export class AIWalk extends Trait {
+export class SimpleAI extends Trait {
   constructor(speed) {
     super('aiWalk');
 
@@ -549,10 +549,34 @@ export class SpawnsFromBlock extends Trait {
 
     ++this.spawnFrame;
     entity.pos.y -= 0.5;
-    if (this.spawnFrame >= this.spawnDuration) {
+    if (this.spawnFrame >= this.spawnDuration)
       this.spawning = false;
-      entity.addTrait(new HasMass());
-      entity.addTrait(new CollidesWithTiles());
+  }
+}
+
+
+export class BouncyAI extends Trait {
+  constructor() {
+    super('bouncyAI');
+
+    this.accelerationDuration = 0.25;
+    this.timeLeftToAccelerate = 0;
+    this.bounceSpeed = 150;
+  }
+
+  update(entity, deltaTime, level) {
+    if (this.timeLeftToAccelerate > 0) {
+      entity.vel.y = -this.bounceSpeed;
+      this.timeLeftToAccelerate -= deltaTime;
+    }
+  }
+
+  tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
+    if (side === 'below') {
+      this.timeLeftToAccelerate = this.accelerationDuration;
+    }
+    else if (side === 'above') {
+      this.timeLeftToAccelerate = 0;
     }
   }
 }

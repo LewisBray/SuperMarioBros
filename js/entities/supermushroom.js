@@ -1,6 +1,7 @@
 import Entity from './entity.js';
 import {loadJSON, loadSpriteSet} from '../loaders.js';
-import {Trait, CollidesWithEntities, AIWalk, SpawnsFromBlock} from '../traits.js';
+import {Trait, HasMass, CollidesWithTiles,
+  CollidesWithEntities, SimpleAI, SpawnsFromBlock} from '../traits.js';
 
 
 export function loadSuperMushroom() {
@@ -18,6 +19,8 @@ export function loadSuperMushroom() {
 class Behaviour extends Trait {
   constructor() {
     super('behaviour');
+
+    this.traitsAddedAfterSpawn = false;
   }
 
   entityCollision(us, them) {
@@ -41,6 +44,14 @@ class Behaviour extends Trait {
   }
 
   update(entity, deltaTime, level) {
+    if (!this.traitsAddedAfterSpawn) {
+      if (entity.spawnsFromBlock && !entity.spawnsFromBlock.spawning) {
+        entity.addTrait(new HasMass());
+        entity.addTrait(new CollidesWithTiles());
+        this.traitsAddedAfterSpawn = true;
+      }
+    }
+
     if (this.collected || entity.yPos > 15 * 16)
       level.removeEntity(entity);
   }
@@ -61,7 +72,7 @@ function createSuperMushroomFactory(animSpriteSet, entitySpec) {
     });
 
     // mass and tile collision traits after done spawning from block
-    superMushroom.addTrait(new AIWalk(30));
+    superMushroom.addTrait(new SimpleAI(50));
     superMushroom.addTrait(new Behaviour());
     superMushroom.addTrait(new SpawnsFromBlock());
     superMushroom.addTrait(new CollidesWithEntities());

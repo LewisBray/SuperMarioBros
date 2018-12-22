@@ -1,6 +1,6 @@
 import Entity from './entity.js';
 import {loadJSON, loadSpriteSet} from '../loaders.js';
-import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, AIWalk, Killable} from '../traits.js';
+import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, SimpleAI, Killable} from '../traits.js';
 
 
 export function loadGoomba() {
@@ -70,7 +70,7 @@ function createGoombaFactory(animSpriteSet, entitySpec) {
   return () => {
     const goomba = new Entity(16, 16);
 
-    goomba.addTrait(new AIWalk(-30));
+    goomba.addTrait(new SimpleAI(-30));
     goomba.addTrait(new Behaviour());
     goomba.addTrait(new Killable());
     goomba.addTrait(new CollidesWithTiles());

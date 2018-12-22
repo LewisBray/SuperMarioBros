@@ -19,6 +19,8 @@ import {loadJSON, loadEntities, loadLayersToDraw} from './loaders.js';
 //  - use async/await over promises for readability
 //  - tiles that are being bumped should interact with entities above them
 //  - level class getting big, maybe break into smaller entities and make a GameState object to update?
+//  - make a player input object to update before game state, game state would use player input object to update
+//  - relative paths for files
 
 // Optimisations
 //  - object pooling for entities
@@ -32,6 +34,7 @@ import {loadJSON, loadEntities, loadLayersToDraw} from './loaders.js';
 //  - make sure no functions/objects are created inside game loop if not necessary
 //  - pull as much as possible out of game loop functions
 //  - canvas property setting is expensive (apparently) so remove from game loop
+//  - don't need to create array of candidate collision tiles, just check overlap and reference tile to bump
 
 async function main(canvas) {
   const context = canvas.getContext('2d');

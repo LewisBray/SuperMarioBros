@@ -1,6 +1,6 @@
 import Entity from './entity.js';
 import {loadJSON, loadSpriteSet} from '../loaders.js';
-import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, AIWalk, Killable} from '../traits.js';
+import {Trait, CollidesWithTiles, CollidesWithEntities, HasMass, SimpleAI, Killable} from '../traits.js';
 
 
 const Walking = Symbol('walking');
@@ -201,7 +201,7 @@ function createKoopaFactory(animSpriteSet, entitySpec) {
       koopa.audio.set(audio.name, new Audio(`/js/music/effects/${audio.file}.wav`));
     });
 
-    koopa.addTrait(new AIWalk(30));
+    koopa.addTrait(new SimpleAI(30));
     koopa.addTrait(new Killable());
     koopa.addTrait(new Behaviour());
     koopa.addTrait(new CollidesWithTiles());
