@@ -559,24 +559,25 @@ export class BouncyAI extends Trait {
   constructor() {
     super('bouncyAI');
 
-    this.accelerationDuration = 0.25;
-    this.timeLeftToAccelerate = 0;
-    this.bounceSpeed = 150;
+    this.shouldBounce = false;
+    this.stopAcceleratingUp = false;
   }
 
   update(entity, deltaTime, level) {
-    if (this.timeLeftToAccelerate > 0) {
-      entity.vel.y = -this.bounceSpeed;
-      this.timeLeftToAccelerate -= deltaTime;
-    }
+    if (this.shouldBounce)
+      entity.vel.y = -350;
+    else if (this.stopAcceleratingUp)
+      entity.vel.y = 0;
+    
+    this.shouldBounce = false;
+    this.stopAcceleratingUp = false;
   }
 
-  tileCollision(entity, side, tileCollidedWith, candidateCollisionTiles) {
+  tileCollision(entity, side, tileCollidedWith, candidateCollisiontiles) {
     if (side === 'below') {
-      this.timeLeftToAccelerate = this.accelerationDuration;
+      this.shouldBounce = true;;
     }
-    else if (side === 'above') {
-      this.timeLeftToAccelerate = 0;
-    }
+    else if (side === 'above')
+      this.stopAcceleratingUp = true;
   }
 }

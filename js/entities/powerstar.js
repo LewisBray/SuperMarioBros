@@ -48,6 +48,8 @@ class Behaviour extends Trait {
       if (entity.spawnsFromBlock && !entity.spawnsFromBlock.spawning) {
         entity.addTrait(new HasMass());
         entity.addTrait(new CollidesWithTiles());
+        entity.addTrait(new SimpleAI(60));
+        entity.addTrait(new BouncyAI());
         this.traitsAddedAfterSpawn = true;
       }
     }
@@ -74,8 +76,8 @@ function createPowerStarFactory(animSpriteSet, entitySpec) {
     });
 
     // mass and tile collision traits after done spawning from block
-    powerStar.addTrait(new SimpleAI(50));
-    powerStar.addTrait(new BouncyAI());
+    // powerStar.addTrait(new SimpleAI(50));
+    // powerStar.addTrait(new BouncyAI());
     powerStar.addTrait(new Behaviour());
     powerStar.addTrait(new SpawnsFromBlock());
     powerStar.addTrait(new CollidesWithEntities());
