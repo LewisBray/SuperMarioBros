@@ -769,11 +769,16 @@
           "quantity": 1
         },
         {
-          "position": [78, 9],
-          "quantity": 1
-        },
-        {
           "position": [109, 5],
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "flower",
+      "info": [
+        {
+          "position": [78, 9],
           "quantity": 1
         }
       ]

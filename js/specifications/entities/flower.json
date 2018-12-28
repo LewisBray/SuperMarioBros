@@ -1,0 +1,44 @@
+{
+  "imageURL": "/js/images/entities/flower.png",
+  "xScale": 16,
+  "yScale": 16,
+
+  "tiles": [
+    {
+      "name": "flower-1",
+      "location": [0, 0]
+    },
+    {
+      "name": "flower-2",
+      "location": [1, 0]
+    },
+    {
+      "name": "flower-3",
+      "location": [2, 0]
+    },
+    {
+      "name": "flower-4",
+      "location": [3, 0]
+    }
+  ],
+
+  "animations": [
+    {
+      "name": "flower",
+      "frameLength": 0.1,
+      "frames": [
+        "flower-1",
+        "flower-2",
+        "flower-3",
+        "flower-4"
+      ]
+    }
+  ],
+
+  "audio": [
+    {
+      "name": "spawn",
+      "file": "powerup appears"
+    }
+  ]
+}
