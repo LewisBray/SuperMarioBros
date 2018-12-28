@@ -120,7 +120,6 @@ export class Move extends Trait {
 }
 
 
-// Need better name for this trait, it's movement that bounces off walls regardless of walking
 export class SimpleAI extends Trait {
   constructor(speed) {
     super('aiWalk');
@@ -316,7 +315,6 @@ export class CollidesWithTiles extends Trait {
       }
     });
   }
-  
 }
 
 
@@ -560,24 +558,62 @@ export class BouncyAI extends Trait {
     super('bouncyAI');
 
     this.shouldBounce = false;
-    this.stopAcceleratingUp = false;
+    this.shouldCancel = false;
   }
 
   update(entity, deltaTime, level) {
     if (this.shouldBounce)
       entity.vel.y = -350;
-    else if (this.stopAcceleratingUp)
+    else if (this.shouldCancel)
       entity.vel.y = 0;
     
     this.shouldBounce = false;
-    this.stopAcceleratingUp = false;
+    this.shouldCancel = false;
   }
 
   tileCollision(entity, side, tileCollidedWith, candidateCollisiontiles) {
-    if (side === 'below') {
-      this.shouldBounce = true;;
-    }
+    if (side === 'below')
+      this.shouldBounce = true;
     else if (side === 'above')
-      this.stopAcceleratingUp = true;
+      this.shouldCancel = true;
+  }
+}
+
+
+export class Collectable extends Trait {
+  constructor(pointsForCollecting, soundToPlayOnCollection, displayHUDAnimation = true) {
+    super('collectable');
+
+    this.collected = false;
+    this.pointsForCollecting = pointsForCollecting;
+    this.soundToPlayOnCollection = soundToPlayOnCollection;
+    this.displayHUDAnimation = displayHUDAnimation;
+  }
+
+  update(entity, deltaTime, level) {
+    if (this.collected)
+      level.removeEntity(entity);
+  }
+
+  entityCollision(us, them) {
+    if (this.collected)
+      return;
+    
+    if (them.collector) {
+      if (them.scoresPoints) {
+        them.scoresPoints.pointsScored += this.pointsForCollecting;
+        if (this.displayHUDAnimation) {
+          them.scoresPoints.hudAnimations.push({
+            type: 'score',
+            points: this.pointsForCollecting.toString(),
+            xPos: us.collisionBox.left,
+            yPos: us.collisionBox.top - us.height,
+            frame: 0
+          });
+        }
+      }
+      this.collected = true;
+      them.playAudio(this.soundToPlayOnCollection);
+    }
   }
 }

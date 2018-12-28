@@ -72,7 +72,7 @@
       "file": "coin"
     },
     {
-      "name": "collectSuperMushroom",
+      "name": "collectItem",
       "file": "powerup"
     }
   ]

@@ -1,7 +1,7 @@
 import Entity from './entity.js';
 import {loadJSON, loadSpriteSet} from '../loaders.js';
 import {Trait, HasMass, CollidesWithTiles,
-  CollidesWithEntities, SimpleAI, SpawnsFromBlock} from '../traits.js';
+  CollidesWithEntities, SimpleAI, SpawnsFromBlock, Collectable} from '../traits.js';
 
 
 export function loadSuperMushroom() {
@@ -23,26 +23,6 @@ class Behaviour extends Trait {
     this.traitsAddedAfterSpawn = false;
   }
 
-  entityCollision(us, them) {
-    if (this.collected)
-      return;
-    
-    if (them.collector) {
-      if (them.scoresPoints) {
-        them.scoresPoints.pointsScored += 1000;
-        them.scoresPoints.hudAnimations.push({
-          type: 'score',
-          points: '1000',
-          xPos: us.collisionBox.left,
-          yPos: us.collisionBox.top - us.height,
-          frame: 0
-        });
-      }
-      this.collected = true;
-      them.playAudio('collectSuperMushroom');
-    }
-  }
-
   update(entity, deltaTime, level) {
     if (!this.traitsAddedAfterSpawn) {
       if (entity.spawnsFromBlock && !entity.spawnsFromBlock.spawning) {
@@ -52,7 +32,7 @@ class Behaviour extends Trait {
       }
     }
 
-    if (this.collected || entity.yPos > 15 * 16)
+    if (entity.yPos > 15 * 16)
       level.removeEntity(entity);
   }
 }
@@ -72,10 +52,11 @@ function createSuperMushroomFactory(animSpriteSet, entitySpec) {
     });
 
     // mass and tile collision traits after done spawning from block
-    superMushroom.addTrait(new SimpleAI(50));
     superMushroom.addTrait(new Behaviour());
+    superMushroom.addTrait(new SimpleAI(50));
     superMushroom.addTrait(new SpawnsFromBlock());
     superMushroom.addTrait(new CollidesWithEntities());
+    superMushroom.addTrait(new Collectable(1000, 'collectItem'));
 
     superMushroom.draw = drawSuperMushroom;
 
