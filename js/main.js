@@ -21,6 +21,7 @@ import {loadJSON, loadEntities, loadLayersToDraw} from './loaders.js';
 //  - level class getting big, maybe break into smaller entities and make a GameState object to update?
 //  - make a player input object to update before game state, game state would use player input object to update
 //  - relative paths for files
+//  - invisible objects (i.e. 1-up mushroom in invisible block)
 
 // Optimisations
 //  - object pooling for entities

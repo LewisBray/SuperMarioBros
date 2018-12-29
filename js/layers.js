@@ -19,6 +19,8 @@ export function createHUDLayer(hudTileSet, level) {
     miniTextCanvases.set(score, createTextCanvas(score, hudTileSet, 'miniWhite'));
   });
 
+  miniTextCanvases.set('1-up', create1UpTextCanvas('white', hudTileSet));
+
   function animateSpinningCoin(coinAnimationInfo, context, camera) {
     coinAnimationInfo.frame++;
     if (coinAnimationInfo.frame >= 1 && coinAnimationInfo.frame <= 10)
@@ -31,7 +33,7 @@ export function createHUDLayer(hudTileSet, level) {
       coinAnimationInfo.yPos += 2;
       if (coinAnimationInfo.frame === 30) {
         level.hudAnimations.push({
-          type: 'score',
+          type: 'risingText',
           points: '200',
           xPos: coinAnimationInfo.xPos + 2,
           yPos: coinAnimationInfo.yPos,
@@ -79,7 +81,7 @@ export function createHUDLayer(hudTileSet, level) {
 
       if (animationInfo.type === 'coin')
         animateSpinningCoin(animationInfo, context, camera);
-      else if (animationInfo.type === 'score')
+      else if (animationInfo.type === 'risingText')
         animateRisingText(animationInfo, context, camera);
       else {
         console.warn('Unhandled HUD animation:', animationInfo);
@@ -87,6 +89,15 @@ export function createHUDLayer(hudTileSet, level) {
       }
     });
   };
+}
+
+function create1UpTextCanvas(colour, hudTileSet) {
+  const oneUpCanvas = document.createElement('canvas');
+  oneUpCanvas.width = 16;
+  oneUpCanvas.height = 8;
+  hudTileSet.draw(colour + '1-up', oneUpCanvas.getContext('2d'), 0, 0);
+
+  return oneUpCanvas;
 }
 
 function createTextCanvas(string, hudTileSet, modifier = '') {

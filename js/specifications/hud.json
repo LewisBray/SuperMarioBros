@@ -699,6 +699,12 @@
       "location": [96, 48],
       "width": 16,
       "height": 16
+    },
+    {
+      "name": "white1-up",
+      "location": [32, 56],
+      "width": 16,
+      "height": 8
     }
   ],
 

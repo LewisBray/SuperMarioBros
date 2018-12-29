@@ -581,11 +581,11 @@ export class BouncyAI extends Trait {
 
 
 export class Collectable extends Trait {
-  constructor(pointsForCollecting, soundToPlayOnCollection, displayHUDAnimation = true) {
+  constructor(hudInfo, soundToPlayOnCollection, displayHUDAnimation = true) {
     super('collectable');
 
     this.collected = false;
-    this.pointsForCollecting = pointsForCollecting;
+    this.hudInfo = hudInfo;
     this.soundToPlayOnCollection = soundToPlayOnCollection;
     this.displayHUDAnimation = displayHUDAnimation;
   }
@@ -598,20 +598,36 @@ export class Collectable extends Trait {
   entityCollision(us, them) {
     if (this.collected)
       return;
+
+    const typeOfHUDInfo = typeof(this.hudInfo);
     
     if (them.collector) {
-      if (them.scoresPoints) {
-        them.scoresPoints.pointsScored += this.pointsForCollecting;
+      if (typeOfHUDInfo === 'number') {
+        if (them.scoresPoints)
+          them.scoresPoints.pointsScored += this.hudInfo;
+  
         if (this.displayHUDAnimation) {
           them.scoresPoints.hudAnimations.push({
-            type: 'score',
-            points: this.pointsForCollecting.toString(),
+            type: 'risingText',
+            points: this.hudInfo.toString(),
             xPos: us.collisionBox.left,
             yPos: us.collisionBox.top - us.height,
             frame: 0
           });
         }
       }
+      else if (typeOfHUDInfo === 'string') {
+        if (this.displayHUDAnimation) {
+          them.scoresPoints.hudAnimations.push({
+            type: 'risingText',
+            points: this.hudInfo,
+            xPos: us.collisionBox.left,
+            yPos: us.collisionBox.top - us.height,
+            frame: 0
+          });
+        }
+      }
+
       this.collected = true;
       them.playAudio(this.soundToPlayOnCollection);
     }

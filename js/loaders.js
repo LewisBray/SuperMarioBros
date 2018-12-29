@@ -8,6 +8,7 @@ import {loadFlower} from './entities/flower.js';
 import {loadPowerStar} from './entities/powerstar.js';
 import {createBackgroundColourLayer, createBackgroundLayer,
   createSpriteLayer, createCameraLayer, createHUDLayer} from './layers.js';
+import { load1Up } from './entities/1-up.js';
 
 
 export function loadImage(url) {
@@ -81,7 +82,8 @@ export function loadEntities() {
     loadCoin().then(addEntity('coin')),
     loadSuperMushroom().then(addEntity('superMushroom')),
     loadFlower().then(addEntity('flower')),
-    loadPowerStar().then(addEntity('powerStar'))
+    loadPowerStar().then(addEntity('powerStar')),
+    load1Up().then(addEntity('1-up'))
   ])
   .then(() => {
     return entityFactory;

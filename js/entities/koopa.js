@@ -79,7 +79,7 @@ class Behaviour extends Trait {
       if (them.scoresPoints) {
         them.scoresPoints.pointsScored += 100;
         them.scoresPoints.hudAnimations.push({
-          type: 'score',
+          type: 'risingText',
           points: '100',
           xPos: us.collisionBox.left + 2,
           yPos: us.collisionBox.top - us.height,
@@ -107,7 +107,7 @@ class Behaviour extends Trait {
       if (them.scoresPoints) {
         them.scoresPoints.pointsScored += 500;
         them.scoresPoints.hudAnimations.push({
-          type: 'score',
+          type: 'risingText',
           points: '500',
           xPos: us.collisionBox.left + 2,
           yPos: us.collisionBox.top - us.height,

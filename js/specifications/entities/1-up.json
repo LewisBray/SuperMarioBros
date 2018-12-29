@@ -1,0 +1,19 @@
+{
+  "imageURL": "/js/images/entities/1-up.png",
+  "xScale": 16,
+  "yScale": 16,
+
+  "tiles": [
+    {
+      "name": "1-up",
+      "location": [0, 0]
+    }
+  ],
+
+  "audio": [
+    {
+      "name": "spawn",
+      "file": "powerup appears"
+    }
+  ]
+}

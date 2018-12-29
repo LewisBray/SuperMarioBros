@@ -728,10 +728,6 @@
           "quantity": 1
         },
         {
-          "position": [22, 5],
-          "quantity": 1
-        },
-        {
           "position": [94, 5],
           "quantity": 1
         },
@@ -788,6 +784,15 @@
       "info": [
         {
           "position": [101, 9],
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "1-up",
+      "info": [
+        {
+          "position": [22, 5],
           "quantity": 1
         }
       ]

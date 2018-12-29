@@ -74,6 +74,10 @@
     {
       "name": "collectItem",
       "file": "powerup"
+    },
+    {
+      "name": "collect1Up",
+      "file": "1-up"
     }
   ]
 }
