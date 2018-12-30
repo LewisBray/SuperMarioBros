@@ -23,7 +23,8 @@ export default class Level {
     });
 
     this.entitiesToSpawnInfo.forEach(entityInfo => {
-      const newEntity = createEntity[entityInfo.name]();
+      const entityCreator = createEntity[entityInfo.name];
+      const newEntity = entityCreator();
       newEntity.pos.x = entityInfo.xPos;
       newEntity.pos.y = entityInfo.yPos;
       this.entities.push(newEntity);
@@ -110,7 +111,7 @@ export function createLevel(levelName, levelSpec, entityFactory) {
       
       levelTile.contains = item.name;
       levelTile.quantity = info.quantity;  
-    })
+    });
   });
 
   levelSpec.audio.forEach(audio => {

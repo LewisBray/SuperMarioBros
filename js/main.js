@@ -22,6 +22,7 @@ import {loadJSON, loadEntities, loadLayersToDraw} from './loaders.js';
 //  - make a player input object to update before game state, game state would use player input object to update
 //  - relative paths for files
 //  - invisible objects (i.e. 1-up mushroom in invisible block)
+//  - maybe coins spawning out of blocks should be entities to keep logic simpler in BumpsBlocks trait?
 
 // Optimisations
 //  - object pooling for entities

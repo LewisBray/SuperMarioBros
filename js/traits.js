@@ -424,31 +424,33 @@ export class BumpsBlocks extends Trait {
   }
 
   bumpTile(tileInfo) {
-    tileInfo.frame++;
+    ++tileInfo.frame;
 
     if (tileInfo.frame >= 1 && tileInfo.frame <= 3)
       tileInfo.tile.yPos -= 2;
-    else if (tileInfo.frame >= 4 && tileInfo.frame <= 6) {
+    else if (tileInfo.frame >= 4 && tileInfo.frame <= 5)
       tileInfo.tile.yPos += 2;
-      if (tileInfo.frame === 6) {
-        if (tileInfo.tile.contains) {
-          tileInfo.tile.quantity--;
+    else if (tileInfo.frame === 6) {  // On last frame of animation, decrement quantity of...
+      tileInfo.tile.yPos += 2;        // ...item in block and spawn any entities necessary
+      if (tileInfo.tile.contains) {
+        --tileInfo.tile.quantity;
+        if (tileInfo.tile.contains !== 'coin') {
           this.entitiesToSpawnInfo.push({
             name: tileInfo.tile.contains,
             xPos: tileInfo.tile.xPos,
             yPos: tileInfo.tile.yPos
           });
         }
-
-        if (tileInfo.tile.quantity <= 0) {
-          tileInfo.tile.name = 'bumpedBlock';
-          delete tileInfo.tile.contains;
-          delete tileInfo.tile.quantity;
-        }
-
-        const tileInfoIndex = this.tileAnimations.indexOf(tileInfo);
-        this.hudAnimations.splice(tileInfoIndex, 1);
       }
+
+      if (tileInfo.tile.quantity <= 0) {
+        tileInfo.tile.name = 'bumpedBlock';
+        delete tileInfo.tile.contains;
+        delete tileInfo.tile.quantity;
+      }
+
+      const tileInfoIndex = this.tileAnimations.indexOf(tileInfo);
+      this.hudAnimations.splice(tileInfoIndex, 1);
     }
   }
 
@@ -466,10 +468,8 @@ export class BumpsBlocks extends Trait {
       }
       else {
         if (tile.tile.contains === 'coin') {    // power-ups are spawned after tile has been bumped
-          if (entity.collector) {
+          if (entity.collector)
             entity.collector.coinsCollected++;
-            tile.tile.quantity--;
-          }
 
           if (entity.scoresPoints) {
             entity.scoresPoints.pointsScored += 200;
